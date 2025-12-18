@@ -1,0 +1,19 @@
+$id: "http://game/schemas/itemsets.yaml"
+type: object
+properties:
+  itemsets:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slots:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      required: [id, name, slots]

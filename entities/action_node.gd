@@ -19,3 +19,17 @@ func serialize() -> Dictionary:
 
 func get_entity_type() -> String:
 	return "action-nodes"
+
+func create_resource_shell() -> Resource:
+	var shell = ActionData.new()
+	shell.id = id
+	shell.name = name
+	return shell
+
+func populate_resource(res: Resource, importer: Object) -> void:
+	if resource != "":
+		var resolved = importer._get_resource_by_identifier_or_log(resource, "action-nodes", id)
+		if resolved != null:
+			res.resource = resolved
+	# Future: populate loot_table and req_skillset references from raw data
+	return

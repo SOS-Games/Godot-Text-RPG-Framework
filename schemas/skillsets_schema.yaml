@@ -1,0 +1,17 @@
+$id: "http://game/schemas/skillsets.yaml"
+type: object
+properties:
+  skillsets:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        skills:
+          type: object
+          additionalProperties:
+            type: integer
+      required: [id, name, skills]

@@ -15,8 +15,10 @@ var _schemas: Dictionary = {}
 var _entities: Dictionary = {} # category -> id -> data
 var _errors: Array = []
 var _validation_reports: Array = []
+var _resources: Dictionary = {} # category -> id -> Resource
+var _entity_directory: Dictionary = {} # category -> id -> deserialized entity object
 
-var import_order: Array = ["skills", "items", "npcs", "mobs", "locations", "action-nodes"]
+var import_order: Array = ["skills", "skillsets", "items", "itemsets", "loot_tables", "npcs", "creatures", "actions", "locations", "stores"]
 
 # Maps field names to their expected reference type (category)
 var _reference_type_map: Dictionary = {
@@ -31,6 +33,8 @@ var _reference_type_map: Dictionary = {
 	"location_ids": "locations",
 }
 
+var _entity_class_map: Dictionary = {} # category -> class
+
 func _init() -> void:
 	_register_entity_classes()
 
@@ -38,9 +42,33 @@ func _register_entity_classes() -> void:
 	YAML.register_class(GameEntity)
 	YAML.register_class(Skill)
 	YAML.register_class(Item)
-	YAML.register_class(Mob)
+	YAML.register_class(Creature)
 	YAML.register_class(ActionNode)
 	YAML.register_class(Location)
+	YAML.register_class(NPC)
+	YAML.register_class(SkillSet)
+	YAML.register_class(ItemSet)
+	YAML.register_class(LootTable)
+	YAML.register_class(Store)
+
+	# Map category names to entity classes for conversion
+	_entity_class_map = {
+		"items": Item,
+		"skills": Skill,
+		"npcs": NPC,
+		"creatures": Creature,
+		"action-nodes": ActionNode,
+		"locations": Location,
+		"skillsets": SkillSet,
+		"itemsets": ItemSet,
+		"loot_tables": LootTable,
+		"stores": Store,
+	}
+
+	# Prepare empty registries
+	_entity_directory = {}
+	_resources = {}
+
 
 func _ready():
 	pass
@@ -54,6 +82,7 @@ func clear():
 func import_all():
 	"""Main entry: load schemas, then import YAML files from configured data_dirs.
 	Returns true on success (no parse/validation errors), false otherwise.
+	Stops immediately on any error (fatal mode).
 	"""
 	clear()
 	_load_schemas_from_dir(schemas_dir)
@@ -65,16 +94,27 @@ func import_all():
 	for category in import_order:
 		if file_map.has(category):
 			_import_files_for_category(category, file_map[category])
+			if not _errors.is_empty():
+				return false
 			file_map.erase(category)
 
 	# Import any remaining categories
 	for category in file_map.keys():
 		_import_files_for_category(category, file_map[category])
+		if not _errors.is_empty():
+			return false
 
 	# After all imports, resolve references
 	_resolve_references()
+	if not _errors.is_empty():
+		return false
 
-	return _errors.is_empty()
+	# Convert imported intermediate entities into typed Resource objects
+	_convert_entities_to_resources()
+	if not _errors.is_empty():
+		return false
+
+	return true
 
 func _load_schemas_from_dir(dir_path: String) -> void:
 	# Attempt to load any .yaml/.yml schema files found in dir_path
@@ -244,6 +284,94 @@ func _find_entity_by_any_category(id_or_name: String, expected_type: Variant = n
 			if typeof(e) == TYPE_DICTIONARY and e.get("name", "") == id_or_name:
 				return e
 	return null
+
+func get_converted_resource(category: String, id: String):
+	if _resources.has(category):
+		return _resources[category].get(id, null)
+	return null
+
+func get_converted_resource_by_identifier(id_or_name: String):
+	# Accept forms "category:id" or plain id/name and search converted resources
+	if id_or_name.find(":") != -1:
+		var parts = id_or_name.split(":", false, 2)
+		if parts.size() >= 2:
+			return get_converted_resource(parts[0], parts[1])
+
+	for cat in _resources.keys():
+		if _resources[cat].has(id_or_name):
+			return _resources[cat][id_or_name]
+		for r in _resources[cat].values():
+			if r != null and typeof(r) == TYPE_OBJECT:
+				if r.name == id_or_name:
+					return r
+	return null
+
+func _get_resource_or_log(category: String, id: String, owner_category: String, owner_id: String):
+	# Return a converted resource or log an error; owner_category/owner_id are used for error context
+	var r = get_converted_resource(category, id)
+	if r == null:
+		_errors.append("Unresolved %s %s referenced by %s %s" % [category, id, owner_category, owner_id])
+	return r
+
+func _resolve_and_append_array(target: Array, category: String, id: String, owner_category: String, owner_id: String) -> void:
+	var r = _get_resource_or_log(category, id, owner_category, owner_id)
+	if r != null:
+		target.append(r)
+
+func _get_resource_by_identifier_or_log(id_or_name: String, owner_category: String, owner_id: String):
+	var r = get_converted_resource_by_identifier(id_or_name)
+	if r == null:
+		_errors.append("Unresolved identifier %s referenced by %s %s" % [id_or_name, owner_category, owner_id])
+	return r
+
+func _convert_entities_to_resources() -> void:
+	# Two-pass conversion to avoid circular reference problems:
+	# Pass 1: deserialize all raw entries into entity objects and register in _entity_directory
+	_entity_directory.clear()
+	for cat in _entities.keys():
+		_entity_directory[cat] = {}
+		for id in _entities[cat].keys():
+			var raw = _entities[cat][id]
+			var cls = _entity_class_map.get(cat, null)
+			if cls != null and cls.has_method("deserialize"):
+				var obj = cls.deserialize(raw)
+				if obj == null:
+					_errors.append("Failed to deserialize entity %s:%s" % [cat, id])
+					continue
+				_entity_directory[cat][id] = obj
+			else:
+				# Keep raw dict available but note we can't convert to typed object
+				_errors.append("No class for category %s; cannot create object for %s" % [cat, id])
+
+	# Pass 2a: create resource shells for every entity (no cross-linking yet)
+	_resources.clear()
+	for cat in _entity_directory.keys():
+		_resources[cat] = {}
+		for id in _entity_directory[cat].keys():
+			var obj = _entity_directory[cat][id]
+			if obj.has_method("create_resource_shell"):
+				var shell = obj.create_resource_shell()
+				if shell == null:
+					_errors.append("create_resource_shell returned null for %s:%s" % [cat, id])
+					continue
+				shell.id = id
+				_resources[cat][id] = shell
+			else:
+				_errors.append("Entity %s:%s missing create_resource_shell" % [cat, id])
+
+	# Pass 2b: populate resource references now that all shells exist
+	for cat in _entity_directory.keys():
+		for id in _entity_directory[cat].keys():
+			var obj = _entity_directory[cat][id]
+			var shell = _resources[cat].get(id, null)
+			if shell == null:
+				continue
+			if obj.has_method("populate_resource"):
+				obj.populate_resource(shell, self)
+			# else no-op
+
+func get_resources(category: String) -> Dictionary:
+	return _resources.get(category, {}).duplicate()
 
 func _validate_entity_type(entity: Variant, category: String, expected_type: String) -> bool:
 	# Check if entity belongs to expected type category

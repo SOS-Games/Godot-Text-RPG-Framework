@@ -1,0 +1,12 @@
+skillsets:
+  - id: "basic_melee"
+    name: "Basic Melee"
+    skills:
+      attack: 10
+      defense: 5
+      strength: 8
+  - id: "mage_set"
+    name: "Mage Skills"
+    skills:
+      magic: 15
+      defense: 3

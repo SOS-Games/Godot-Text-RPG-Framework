@@ -1,0 +1,20 @@
+$id: "http://game/schemas/creatures.yaml"
+type: object
+properties:
+  creatures:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        level:
+          type: integer
+          minimum: 1
+        is_hostile:
+          type: boolean
+        attack_style:
+          type: string
+      required: [id, name, level]

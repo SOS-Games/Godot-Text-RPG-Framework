@@ -1,0 +1,27 @@
+$id: "http://game/schemas/stores.yaml"
+type: object
+properties:
+  stores:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        location_id:
+          type: string
+        buys:
+          type: array
+          items:
+            type: string
+        sells:
+          type: array
+          items:
+            type: string
+        base_prices:
+          type: object
+          additionalProperties:
+            type: integer
+      required: [id, name, location_id, buys, sells, base_prices]

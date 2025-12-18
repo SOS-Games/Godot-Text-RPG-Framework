@@ -19,3 +19,16 @@ func serialize() -> Dictionary:
 
 func get_entity_type() -> String:
 	return "items"
+
+func create_resource_shell() -> Resource:
+	var shell = ItemData.new()
+	shell.id = id
+	shell.name = name
+	return shell
+
+func populate_resource(res: Resource, importer: Object) -> void:
+	# Resolve equip_skill reference into a SkillData resource
+	if equip_skill_id != "":
+		var skill_res = importer._get_resource_or_log("skills", equip_skill_id, "items", id)
+		if skill_res != null:
+			res.equip_skill = skill_res

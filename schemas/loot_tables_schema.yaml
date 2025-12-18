@@ -1,0 +1,29 @@
+$id: "http://game/schemas/loot_tables.yaml"
+type: object
+properties:
+  loot_tables:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        drops:
+          type: array
+          items:
+            type: object
+            properties:
+              item_id:
+                type: string
+              chance:
+                type: number
+                minimum: 0
+                maximum: 1
+              min_quantity:
+                type: integer
+                minimum: 1
+              max_quantity:
+                type: integer
+                minimum: 1
+            required: [item_id, chance, min_quantity, max_quantity]
+      required: [id, drops]

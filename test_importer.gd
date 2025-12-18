@@ -9,6 +9,8 @@ func _ready():
 		print("Import completed with errors:")
 		for e in importer.get_errors():
 			print(" - ", e)
+		get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+		return
 	else:
 		print("Import successful - no errors")
 	

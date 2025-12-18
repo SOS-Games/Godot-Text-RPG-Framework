@@ -1,4 +1,4 @@
-class_name Skill extends GameEntity
+class_name Creature extends GameEntity
 
 var level: int
 
@@ -8,9 +8,9 @@ func _init(p_id: String = "", p_name: String = "", p_level: int = 0) -> void:
 
 static func deserialize(data: Variant):
 	if typeof(data) != TYPE_DICTIONARY:
-		return YAMLResult.error("Skill expects Dictionary")
+		return YAMLResult.error("Creature expects Dictionary")
 	var d: Dictionary = data
-	return Skill.new(d.get("id", ""), d.get("name", ""), d.get("level", 0))
+	return Creature.new(d.get("id", ""), d.get("name", ""), d.get("level", 0))
 
 func serialize() -> Dictionary:
 	var base = super.serialize()
@@ -18,15 +18,18 @@ func serialize() -> Dictionary:
 	return base
 
 func get_entity_type() -> String:
-	return "skills"
+	return "creatures"
 
 func create_resource_shell() -> Resource:
-	var shell = SkillData.new()
+	var shell = CreatureData.new()
 	shell.id = id
 	shell.name = name
 	shell.level = level
 	return shell
 
 func populate_resource(res: Resource, importer: Object) -> void:
-	# Skill has no cross-references to populate
+	# Resolve loot_table and skillset references
+	# These would come from raw entity data stored during deserialization
+	# For now, a placeholder for future implementation
 	return
+

@@ -1,0 +1,17 @@
+itemsets:
+  - id: "knight_gear"
+    name: "Knight Gear"
+    slots:
+      head:
+        - "iron_helm"
+      body:
+        - "iron_chest"
+      weapon:
+        - "iron_sword"
+  - id: "mage_robes"
+    name: "Mage Robes"
+    slots:
+      head:
+        - "mage_hat"
+      body:
+        - "mage_robe"

@@ -1,0 +1,19 @@
+$id: "http://game/schemas/npcs.yaml"
+type: object
+properties:
+  npcs:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        is_talkable:
+          type: boolean
+        is_hostile:
+          type: boolean
+        dialogue_id:
+          type: string
+      required: [id, name]

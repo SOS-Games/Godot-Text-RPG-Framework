@@ -20,3 +20,14 @@ func serialize() -> Dictionary:
 
 func get_entity_type() -> String:
 	return "mobs"
+
+func create_resource_shell() -> Resource:
+	var shell = CreatureData.new()
+	shell.id = id
+	shell.name = name
+	shell.level = level
+	return shell
+
+func populate_resource(res: Resource, importer: Object) -> void:
+	# No cross-entity refs in basic Mob; extend if drops, loot, etc. are present
+	return
