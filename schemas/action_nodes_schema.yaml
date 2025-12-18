@@ -1,0 +1,16 @@
+$id: "http://game/schemas/action-nodes.yaml"
+# Schema for action-nodes.yaml - object with 'action-nodes' key containing array
+type: object
+properties:
+  action-nodes:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        resource:
+          type: string
+      required: [id, name]

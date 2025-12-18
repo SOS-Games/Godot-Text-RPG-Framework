@@ -1,0 +1,22 @@
+$id: "http://game/schemas/locations.yaml"
+# Schema for locations.yaml - object with 'locations' key containing array
+type: object
+properties:
+  locations:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        action_node_ids:
+          type: array
+          items:
+            type: string
+        mob_ids:
+          type: array
+          items:
+            type: string
+      required: [id, name]

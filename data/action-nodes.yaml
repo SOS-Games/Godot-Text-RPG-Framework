@@ -1,0 +1,7 @@
+action-nodes:
+  - id: "action-nodes:tree_oak"
+    name: "Oak Tree"
+    resource: "wood"
+  - id: "action-nodes:ore_iron"
+    name: "Iron Vein"
+    resource: "iron_ore"

@@ -1,0 +1,8 @@
+$schema: "http://game/schemas/skills.yaml"
+skills:
+  - id: "skills:combat"
+    name: "Combat"
+    level: 1
+  - id: "skills:magic"
+    name: "Magic"
+    level: 1

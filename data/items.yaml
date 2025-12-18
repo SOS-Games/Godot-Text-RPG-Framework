@@ -1,0 +1,8 @@
+$schema: "http://game/schemas/items.yaml"
+items:
+  - id: "items:sword_iron"
+    name: "Iron Sword"
+    equip_skill_id: "skills:combat"
+  - id: "items:staff_wood"
+    name: "Wooden Staff"
+    equip_skill_id: "skills:magic"

@@ -1,0 +1,9 @@
+locations:
+  - id: "locations:forest"
+    name: "Enchanted Forest"
+    action_node_ids: ["action-nodes:tree_oak"]
+    mob_ids: ["mobs:goblin"]
+  - id: "locations:mines"
+    name: "Old Mines"
+    action_node_ids: ["action-nodes:ore_iron"]
+    mob_ids: ["mobs:wolf"]

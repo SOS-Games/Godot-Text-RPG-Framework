@@ -1,0 +1,3 @@
+- id: "npcs:merchant"
+  name: "Bob the Merchant"
+  inventory_ids: ["items:sword_iron", "items:staff_wood"]

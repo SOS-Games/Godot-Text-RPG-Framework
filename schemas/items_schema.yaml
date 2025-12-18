@@ -1,0 +1,16 @@
+$id: "http://game/schemas/items.yaml"
+# Schema for items.yaml - object with 'items' key containing array
+type: object
+properties:
+  items:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        equip_skill_id:
+          type: string
+      required: [id, name]

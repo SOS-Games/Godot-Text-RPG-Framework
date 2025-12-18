@@ -1,0 +1,12 @@
+config_version=5
+
+[application]
+
+config/name="Godot Text-RPG Framework"
+run/main_scene="uid://bnxtikkajcqlb"
+config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://icon.svg"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/yaml/plugin.cfg")
