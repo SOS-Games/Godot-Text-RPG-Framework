@@ -1,5 +1,4 @@
 $id: "http://game/schemas/skills.yaml"
-# Schema for skills.yaml - object with 'skills' key containing array
 type: object
 properties:
   skills:

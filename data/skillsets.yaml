@@ -1,3 +1,4 @@
+$schema: "http://game/schemas/skillsets.yaml"
 skillsets:
   - id: "basic_melee"
     name: "Basic Melee"

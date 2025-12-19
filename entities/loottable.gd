@@ -27,5 +27,6 @@ func create_resource_shell() -> Resource:
 	return shell
 
 func populate_resource(res: Resource, importer: Object) -> void:
-	for drop in _drops:
-		importer._resolve_and_append_array("items", drop, _id, res.drops)
+	pass
+	#for drop in _drops:
+	#	importer._resolve_and_append_array("items", drop, _id, res.drops)

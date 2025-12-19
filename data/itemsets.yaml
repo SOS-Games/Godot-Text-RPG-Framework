@@ -1,3 +1,4 @@
+$schema: "http://game/schemas/itemsets.yaml"
 itemsets:
   - id: "knight_gear"
     name: "Knight Gear"

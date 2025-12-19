@@ -1,3 +1,4 @@
+$schema: "http://game/schemas/action-nodes.yaml"
 action-nodes:
   - id: "action-nodes:tree_oak"
     name: "Oak Tree"

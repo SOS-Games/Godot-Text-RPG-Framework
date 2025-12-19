@@ -1,3 +1,6 @@
-- id: "npcs:merchant"
-  name: "Bob the Merchant"
-  item_ids: ["items:sword_iron", "items:staff_wood"]
+$schema: "http://game/schemas/npcs.yaml"
+npcs:
+  - id: "npcs:merchant"
+    name: "Bob the Merchant"
+    is_talkable: true
+    is_hostile: false

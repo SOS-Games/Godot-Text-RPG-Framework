@@ -1,11 +1,14 @@
+$schema: "http://game/schemas/creatures.yaml"
 creatures:
   - id: "creatures:goblin"
     name: "Goblin"
     level: 1
     loot_table_id: "loot_tables:goblin"
-    hostile: true
+    is_hostile: true
     attack_style: "melee"
   - id: "creatures:wolf"
     name: "Wolf"
     level: 2
     loot_table_id: "loot_tables:wolf"
+    is_hostile: true
+    attack_style: "melee"

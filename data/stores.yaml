@@ -1,3 +1,4 @@
+$schema: "http://game/schemas/stores.yaml"
 stores:
   - id: "general_store"
     name: "General Store"

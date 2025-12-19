@@ -1,3 +1,4 @@
+$schema: "http://game/schemas/loot_tables.yaml"
 loot_tables:
   - id: "loot_tables:goblin"
     name: "Goblin Drops"

@@ -153,6 +153,34 @@ func _import_files_for_category(category: String, files: Array) -> void:
 
 		# If schema auto-discovery is desired, call parse_and_validate without schema
 		var result = YAML.parse_and_validate(content)
+		'''
+		# Try to find a registered schema that matches this category and pass it
+		var schema = null
+		for spath in _schemas.keys():
+			var s = _schemas[spath]
+			# If schema is a dictionary, check $id or id
+			if typeof(s) == TYPE_DICTIONARY:
+				var sid = s.get("$id", s.get("id", ""))
+				if sid != "":
+					if sid.ends_with("/%s.yaml" % category) or sid.ends_with("%s.yaml" % category):
+						schema = s
+						break
+			# Fallback: match by schema filename containing the category
+			var base = _basename_no_ext(spath).to_lower()
+			if base == category or base.find(category) != -1:
+				schema = s
+				break
+		var result = null
+		# for testing, do not use manual schema - force auto-discovery, else show error
+		if schema != null:
+			# we've found schema, ignore it
+			result = YAML.parse_and_validate(content)
+			#result = YAML.parse_and_validate(content, schema)
+		else:
+			print("No schema found for category %s; attempting auto-discovery..." % category)
+			# No matching schema found; attempt auto-discovery via $schema in document
+			result = YAML.parse_and_validate(content)
+		'''
 		if result.has_error():
 			_errors.append("Parse error in %s: %s" % [f, result.get_error()])
 			continue

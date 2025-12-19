@@ -1,3 +1,4 @@
+$schema: "http://game/schemas/locations.yaml"
 locations:
   - id: "locations:forest"
     name: "Enchanted Forest"
