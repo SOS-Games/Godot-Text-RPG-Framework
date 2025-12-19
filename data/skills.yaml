@@ -6,3 +6,6 @@ skills:
   - id: "skills:magic"
     name: "Magic"
     level: 1
+  - id: "skills:defense"
+    name: "Defense"
+    level: 1

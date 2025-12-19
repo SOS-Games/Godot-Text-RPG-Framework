@@ -25,26 +25,18 @@ func _ready():
 		var _item = importer.query("items", item_id)
 		print("  - %s: %s (requires skill: %s)" % [item_id, _item.name, _item.equip_skill_id])
 	
-	print("Locations loaded:")
-	for loc_id in importer.get_entities("locations").keys():
-		var loc = importer.query("locations", loc_id)
-		print("  - %s: %s (mobs: %s, action-nodes: %s)" % [loc_id, loc.name, loc.mob_ids, loc.action_node_ids])
-	
 	print("NPCs loaded:")
 	for npc_id in importer.get_entities("npcs").keys():
 		var npc = importer.query("npcs", npc_id)
 		print("  - %s: %s" % [npc_id, npc.name])
-	
-	print("Mobs loaded:")
-	for mob_id in importer.get_entities("mobs").keys():
-		var mob = importer.query("mobs", mob_id)
-		print("  - %s: %s" % [mob_id, mob.name])
 	
 	print("Action Nodes loaded:")
 	for an_id in importer.get_entities("action-nodes").keys():
 		var an = importer.query("action-nodes", an_id)
 		print("  - %s: %s (resource: %s)" % [an_id, an.name, an.resource])
 	
+	# todo - print out all entities from all categories with proper formatting based on type data
+
 	# Demonstrate query API (no duplication)
 	print("\n=== QUERY API DEMO ===")
 	var skill = importer.query("skills", "skills:combat")

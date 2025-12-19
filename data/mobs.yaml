@@ -1,7 +1,0 @@
-mobs:
-  - id: "mobs:goblin"
-    name: "Goblin"
-    level: 1
-  - id: "mobs:wolf"
-    name: "Wolf"
-    level: 2

@@ -1,0 +1,7 @@
+creatures:
+  - id: "creatures:goblin"
+    name: "Goblin"
+    level: 1
+  - id: "creatures:wolf"
+    name: "Wolf"
+    level: 2

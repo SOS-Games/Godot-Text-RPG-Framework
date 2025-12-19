@@ -15,7 +15,7 @@ properties:
           type: array
           items:
             type: string
-        mob_ids:
+        unit_ids:
           type: array
           items:
             type: string

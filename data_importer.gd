@@ -25,7 +25,7 @@ var _reference_type_map: Dictionary = {
 	"equip_skill_id": "skills",
 	"equip_skill_ids": "skills",
 	"action_node_ids": "action-nodes",
-	"mob_ids": "mobs",
+	"creature_ids": "creatures",
 	"item_ids": "items",
 	"inventory_ids": "items",
 	"npc_ids": "npcs",
@@ -246,44 +246,46 @@ func _resolve_references() -> void:
 			var ent = _entities[category][id]
 			for key in ent.keys():
 				var val = ent[key]
-				if typeof(val) == TYPE_STRING and (key.ends_with("_id") or key.ends_with("_ref")):
+				if typeof(val) == TYPE_STRING and (key.ends_with("_id")):
 					var expected_type = _reference_type_map.get(key, null)
-					var target = _find_entity_by_any_category(val, expected_type)
-					if target == null:
-						_errors.append("Unresolved reference: %s.%s -> %s" % [category, id, val])
+					_find_entity_by_any_category(val, expected_type)
 
-				elif typeof(val) == TYPE_ARRAY and (key.ends_with("_ids") or key.ends_with("_refs")):
+				elif typeof(val) == TYPE_ARRAY and (key.ends_with("_ids")):
 					var expected_type = _reference_type_map.get(key, null)
 					for ref in val:
-						var target = _find_entity_by_any_category(ref, expected_type)
-						if target == null:
-							_errors.append("Unresolved reference in array: %s.%s -> %s" % [category, id, str(ref)])
+						_find_entity_by_any_category(ref, expected_type, id)
 
-func _find_entity_by_any_category(id_or_name: String, expected_type: Variant = null):
-	# Try exact category:id match (category:id) first
-	if id_or_name.find(":") != -1:
-		var parts = id_or_name.split(":", false, 2)
-		if parts.size() >= 2:
-			var cat = parts[0]
-			var eid = parts[1]
-			if _entities.has(cat) and _entities[cat].has(eid):
-				var entity = _entities[cat][eid]
-				# Validate type if specified
-				if expected_type != null and not _validate_entity_type(entity, cat, expected_type):
-					return null
-				return entity
+func _validate_id(id: String) -> bool:
+	# Only accept explicit category:id references
+	if id.find(":") == -1:
+		_errors.append("_validate_id Invalid reference format: '%s' (expected 'category:id')" % id)
+		return false
 
-	# Otherwise search across categories by id or name, respecting type constraint
-	for cat in _entities.keys():
-		if expected_type != null and cat != expected_type:
-			continue  # Skip categories that don't match expected type
-		if _entities[cat].has(id_or_name):
-			return _entities[cat][id_or_name]
-		# try by name field
-		for e in _entities[cat].values():
-			if typeof(e) == TYPE_DICTIONARY and e.get("name", "") == id_or_name:
-				return e
-	return null
+	var parts = id.split(":", false, 2)
+	if parts.size() < 2:
+		_errors.append("_validate_id Invalid reference format: '%s' (expected 'category:id')" % id)
+		return false
+	return true
+
+func _find_entity_by_any_category(id: String, expected_type: Variant = null, owner_id: String = "") -> Variant:
+	# Only accept explicit category:id references. Do not perform fuzzy/name lookup.
+	if not _validate_id(id):
+		return null
+
+	var parts = id.split(":", false, 2)
+	var cat = parts[0]
+
+	if not _entities[cat].has(id):
+		_errors.append("_find_entity_by_any_category Unresolved reference: %s -> %s" % [owner_id, id])
+		return null
+
+	var entity = _entities[cat][id]
+	# Validate type if specified
+	if expected_type != null and not _validate_entity_type(entity, cat, expected_type):
+		_errors.append("Reference type mismatch: %s expected '%s'" % [id, expected_type])
+		return null
+
+	return entity
 
 func get_converted_resource(category: String, id: String):
 	if _resources.has(category):
@@ -306,22 +308,22 @@ func get_converted_resource_by_identifier(id_or_name: String):
 					return r
 	return null
 
-func _get_resource_or_log(category: String, id: String, owner_category: String, owner_id: String):
-	# Return a converted resource or log an error; owner_category/owner_id are used for error context
+func _get_resource_or_log_with_owner(category: String, id: String, owner_id: String):
+	# Return a converted resource or log an error; owner_id is used for error context
 	var r = get_converted_resource(category, id)
 	if r == null:
-		_errors.append("Unresolved %s %s referenced by %s %s" % [category, id, owner_category, owner_id])
+		_errors.append("Unresolved %s %s referenced by %s" % [category, id, owner_id])
 	return r
 
-func _resolve_and_append_array(target: Array, category: String, id: String, owner_category: String, owner_id: String) -> void:
-	var r = _get_resource_or_log(category, id, owner_category, owner_id)
+func _resolve_and_append_array(target: Array, category: String, id: String, owner_id: String) -> void:
+	var r = _get_resource_or_log_with_owner(category, id, owner_id)
 	if r != null:
 		target.append(r)
 
-func _get_resource_by_identifier_or_log(id_or_name: String, owner_category: String, owner_id: String):
+func _get_resource_by_identifier_or_log(id_or_name: String, owner_id: String):
 	var r = get_converted_resource_by_identifier(id_or_name)
 	if r == null:
-		_errors.append("Unresolved identifier %s referenced by %s %s" % [id_or_name, owner_category, owner_id])
+		_errors.append("Unresolved identifier %s referenced by %s" % [id_or_name, owner_id])
 	return r
 
 func _convert_entities_to_resources() -> void:

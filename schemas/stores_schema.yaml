@@ -10,8 +10,6 @@ properties:
           type: string
         name:
           type: string
-        location_id:
-          type: string
         buys:
           type: array
           items:
@@ -24,4 +22,4 @@ properties:
           type: object
           additionalProperties:
             type: integer
-      required: [id, name, location_id, buys, sells, base_prices]
+      required: [id, name, buys, sells, base_prices]

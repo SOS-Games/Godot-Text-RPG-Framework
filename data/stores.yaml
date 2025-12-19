@@ -1,17 +1,16 @@
 stores:
   - id: "general_store"
     name: "General Store"
-    location_id: "town_center"
     buys:
-      - "copper_ore"
-      - "wolf_pelt"
+      - "items:copper_ore"
+      - "items:wolf_pelt"
     sells:
-      - "iron_sword"
-      - "iron_helm"
-      - "potion"
+      - "items:sword_iron"
+      - "items:helm_iron"
+      - "items:health_potion"
     base_prices:
       copper_ore: 5
       wolf_pelt: 20
-      iron_sword: 100
-      iron_helm: 80
-      potion: 25
+      sword_iron: 100
+      helm_iron: 80
+      health_potion: 25

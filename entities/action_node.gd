@@ -1,20 +1,20 @@
 class_name ActionNode extends GameEntity
 
-var resource: String
+var drop: String
 
-func _init(p_id: String = "", p_name: String = "", p_resource: String = "") -> void:
+func _init(p_id: String = "", p_name: String = "", p_drop: String = "") -> void:
 	super(p_id, p_name)
-	resource = p_resource
+	drop = p_drop
 
 static func deserialize(data: Variant):
 	if typeof(data) != TYPE_DICTIONARY:
 		return YAMLResult.error("ActionNode expects Dictionary")
 	var d: Dictionary = data
-	return ActionNode.new(d.get("id", ""), d.get("name", ""), d.get("resource", ""))
+	return ActionNode.new(d.get("id", ""), d.get("name", ""), d.get("drop", ""))
 
 func serialize() -> Dictionary:
 	var base = super.serialize()
-	base["resource"] = resource
+	base["drop"] = drop
 	return base
 
 func get_entity_type() -> String:
@@ -27,9 +27,9 @@ func create_resource_shell() -> Resource:
 	return shell
 
 func populate_resource(res: Resource, importer: Object) -> void:
-	if resource != "":
-		var resolved = importer._get_resource_by_identifier_or_log(resource, "action-nodes", id)
+	if drop != "":
+		var resolved = importer._get_resource_or_log_with_owner("drop", drop, id)
 		if resolved != null:
-			res.resource = resolved
+			res.drop = resolved
 	# Future: populate loot_table and req_skillset references from raw data
 	return

@@ -11,6 +11,6 @@ properties:
           type: string
         name:
           type: string
-        resource:
+        drop:
           type: string
-      required: [id, name]
+      required: [id, name, drop]

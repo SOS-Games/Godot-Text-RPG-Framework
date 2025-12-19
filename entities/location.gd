@@ -1,13 +1,13 @@
 class_name Location extends GameEntity
 
 var action_node_ids: Array
-var mob_ids: Array
+var unit_ids: Array
 var exits: Dictionary
 
-func _init(p_id: String = "", p_name: String = "", p_action_node_ids: Array = [], p_mob_ids: Array = [], p_exits: Dictionary = {}) -> void:
+func _init(p_id: String = "", p_name: String = "", p_action_node_ids: Array = [], p_unit_ids: Array = [], p_exits: Dictionary = {}) -> void:
 	super(p_id, p_name)
 	action_node_ids = p_action_node_ids.duplicate()
-	mob_ids = p_mob_ids.duplicate()
+	unit_ids = p_unit_ids.duplicate()
 	exits = p_exits.duplicate()
 
 static func deserialize(data: Variant):
@@ -17,18 +17,18 @@ static func deserialize(data: Variant):
 	var action_ids = d.get("action_node_ids", [])
 	if typeof(action_ids) != TYPE_ARRAY:
 		action_ids = []
-	var mob_ids_data = d.get("mob_ids", [])
-	if typeof(mob_ids_data) != TYPE_ARRAY:
-		mob_ids_data = []
+	var unit_ids_data = d.get("unit_ids", [])
+	if typeof(unit_ids_data) != TYPE_ARRAY:
+		unit_ids_data = []
 	var exits_map = d.get("exits", {})
 	if typeof(exits_map) != TYPE_DICTIONARY:
 		exits_map = {}
-	return Location.new(d.get("id", ""), d.get("name", ""), action_ids, mob_ids_data, exits_map)
+	return Location.new(d.get("id", ""), d.get("name", ""), action_ids, unit_ids_data, exits_map)
 
 func serialize() -> Dictionary:
 	var base = super.serialize()
 	base["action_node_ids"] = action_node_ids
-	base["mob_ids"] = mob_ids
+	base["unit_ids"] = unit_ids
 	return base
 
 func get_entity_type() -> String:
@@ -47,16 +47,15 @@ func create_resource_shell() -> Resource:
 func populate_resource(res: Resource, importer: Object) -> void:
 	# Resolve action nodes
 	for aid in action_node_ids:
-		importer._resolve_and_append_array(res.action_nodes, "action-nodes", aid, "locations", id)
+		importer._resolve_and_append_array(res.action_nodes, "action-nodes", aid, id)
 
 	# Resolve creatures (NPCs)
-	for mid in mob_ids:
-		importer._resolve_and_append_array(res.creature_agents, "creatures", mid, "locations", id)
-
+	for mid in unit_ids:
+		importer._resolve_and_append_array(res.creature_agents, "creatures", mid, id)
 	# Resolve exits (direction -> location id)
 	for dir in exits.keys():
 		var dest_id = exits[dir]
-		var dest = importer._get_resource_or_log("locations", str(dest_id), "locations", id)
+		var dest = importer._get_resource_or_log_with_owner("locations", str(dest_id), id)
 		if dest != null:
 			var exit = LocationExit.new()
 			exit.direction = dir

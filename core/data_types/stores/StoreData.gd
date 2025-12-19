@@ -4,7 +4,6 @@ class_name StoreData
 
 @export var id: String = ""
 @export var name: String = ""
-@export var location: LocationData = null
-@export var buys: Array[String] = []
-@export var sells: Array[String] = []
+@export var buys: Array[ItemData] = []
+@export var sells: Array[ItemData] = []
 @export var base_prices: Dictionary = {}

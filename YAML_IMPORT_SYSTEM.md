@@ -1,5 +1,7 @@
 # YAML Import System for Fantasy Idle Game
 
+Warning: Documentation is Outdated!
+
 This system provides a lightweight, modular YAML import framework for managing game entities with type-safe references, schema validation, and dependency ordering.
 
 ## Overview
