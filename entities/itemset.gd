@@ -18,7 +18,7 @@ func get_entity_type() -> String:
 
 func create_resource_shell() -> Resource:
 	var shell := ItemSetData.new()
-	shell.id = id
+	shell.id = _id
 	shell.name = _name
 	return shell
 

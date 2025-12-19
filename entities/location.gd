@@ -1,14 +1,14 @@
 class_name Location extends GameEntity
 
-var action_node_ids: Array
-var unit_ids: Array
-var exits: Dictionary
+var _action_node_ids: Array
+var _unit_ids: Array
+var _exits: Dictionary
 
 func _init(p_id: String = "", p_name: String = "", p_action_node_ids: Array = [], p_unit_ids: Array = [], p_exits: Dictionary = {}) -> void:
 	super(p_id, p_name)
-	action_node_ids = p_action_node_ids.duplicate()
-	unit_ids = p_unit_ids.duplicate()
-	exits = p_exits.duplicate()
+	_action_node_ids = p_action_node_ids.duplicate()
+	_unit_ids = p_unit_ids.duplicate()
+	_exits = p_exits.duplicate()
 
 static func deserialize(data: Variant):
 	if typeof(data) != TYPE_DICTIONARY:
@@ -27,8 +27,8 @@ static func deserialize(data: Variant):
 
 func serialize() -> Dictionary:
 	var base = super.serialize()
-	base["action_node_ids"] = action_node_ids
-	base["unit_ids"] = unit_ids
+	base["action_node_ids"] = _action_node_ids
+	base["unit_ids"] = _unit_ids
 	return base
 
 func get_entity_type() -> String:
@@ -36,7 +36,7 @@ func get_entity_type() -> String:
 
 func create_resource_shell() -> Resource:
 	var shell := LocationData.new()
-	shell.id = id
+	shell.id = _id
 	shell.name = _name
 	shell.action_nodes = []
 	shell.npc_agents = []
@@ -46,16 +46,16 @@ func create_resource_shell() -> Resource:
 
 func populate_resource(res: Resource, importer: Object) -> void:
 	# Resolve action nodes
-	for action_node_id in action_node_ids:
-		importer._resolve_and_append_array("action-nodes", action_node_id, id, res.action_nodes)
+	for action_node_id in _action_node_ids:
+		importer._resolve_and_append_array("action-nodes", action_node_id, _id, res.action_nodes)
 
 	# Resolve creatures (NPCs)
-	for unit_id in unit_ids:
-		importer._resolve_and_append_array("creatures", unit_id, id, res.creature_agents)
+	for unit_id in _unit_ids:
+		importer._resolve_and_append_array("creatures", unit_id, _id, res.creature_agents)
 	# Resolve exits (direction -> location id)
-	for dir in exits.keys():
-		var dest_id = exits[dir]
-		var dest = importer._get_resource_or_log("locations", str(dest_id), id)
+	for dir in _exits.keys():
+		var dest_id = _exits[dir]
+		var dest = importer._get_resource_or_log("locations", str(dest_id), _id)
 		if dest != null:
 			var exit = LocationExit.new()
 			exit.direction = dir

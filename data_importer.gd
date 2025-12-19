@@ -21,16 +21,17 @@ var _entity_directory: Dictionary = {} # category -> id -> deserialized entity o
 var import_order: Array = ["skills", "skillsets", "items", "itemsets", "loot_tables", "npcs", "creatures", "actions", "locations", "stores"]
 
 # Maps field names to their expected reference type (category)
+# This map is used to validate references and convert them to typed Resource objects
+# this is not used by the yaml parser, but instead this data_importer.gd
 var _reference_type_map: Dictionary = {
 	"equip_skill_id": "skills",
-	"equip_skill_ids": "skills",
 	"action_node_ids": "action-nodes",
-	"creature_ids": "creatures",
+	#"creature_ids": "creatures",
 	"item_ids": "items",
-	"inventory_ids": "items",
-	"npc_ids": "npcs",
-	"skill_ids": "skills",
-	"location_ids": "locations",
+	#"npc_ids": "npcs",
+	#"skill_ids": "skills",
+	#"location_ids": "locations",
+	"loot_table_id": "loot_tables",
 }
 
 var _entity_class_map: Dictionary = {} # category -> class
@@ -248,7 +249,7 @@ func _resolve_references() -> void:
 				var val = ent[key]
 				if typeof(val) == TYPE_STRING and (key.ends_with("_id")):
 					var expected_type = _reference_type_map.get(key, null)
-					_find_entity_by_any_category(val, expected_type)
+					_find_entity_by_any_category(val, expected_type, id)
 
 				elif typeof(val) == TYPE_ARRAY and (key.ends_with("_ids")):
 					var expected_type = _reference_type_map.get(key, null)

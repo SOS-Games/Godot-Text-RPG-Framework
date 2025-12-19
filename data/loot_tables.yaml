@@ -1,5 +1,6 @@
 loot_tables:
-  - id: "common_goblin_drops"
+  - id: "loot_tables:goblin"
+    name: "Goblin Drops"
     drops:
       - item_id: "copper_ore"
         chance: 0.85
@@ -9,7 +10,8 @@ loot_tables:
         chance: 0.15
         min_quantity: 1
         max_quantity: 1
-  - id: "rare_wolf_drops"
+  - id: "loot_tables:wolf"
+    name: "Wolf Drops"
     drops:
       - item_id: "wolf_pelt"
         chance: 0.9

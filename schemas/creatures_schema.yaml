@@ -17,4 +17,6 @@ properties:
           type: boolean
         attack_style:
           type: string
-      required: [id, name, level]
+        loot_table_id:
+          type: string
+      required: [id, name, level, is_hostile, attack_style, loot_table_id]
