@@ -299,7 +299,7 @@ func _get_resource_or_log(category: String, id: String, owner_id: String):
 	var r = get_converted_resource(category, id, owner_id)
 	return r
 
-func _resolve_and_append_array(target: Array, category: String, id: String, owner_id: String) -> void:
+func _resolve_and_append_array(category: String, id: String, owner_id: String, target: Array) -> void:
 	var r = _get_resource_or_log(category, id, owner_id)
 	if r != null:
 		target.append(r)
@@ -381,6 +381,14 @@ func get_errors() -> Array:
 func get_validation_reports() -> Array:
 	return _validation_reports.duplicate()
 
+func print_all_resources():
+	# Print all resources for debugging
+	for cat in _resources.keys():
+		for id in _resources[cat].keys():
+			var r : Resource = _resources[cat][id]
+			print(r.fields_to_string())
+			print("-----");
+
 # -------------------- Helpers --------------------
 func _read_file_text(path: String) -> Variant:
 	var f = FileAccess.open(path, FileAccess.READ)
@@ -414,3 +422,10 @@ func _list_files(path: String) -> Array:
 			out.append(full)
 	dir.list_dir_end()
 	return out
+
+
+func get_attr(attr) -> String:
+	if self.get(attr):
+		return "<%s>" % self.get(attr).id
+	else:
+		return ""

@@ -37,7 +37,7 @@ func get_entity_type() -> String:
 func create_resource_shell() -> Resource:
 	var shell := LocationData.new()
 	shell.id = id
-	shell.name = name
+	shell.name = _name
 	shell.action_nodes = []
 	shell.npc_agents = []
 	shell.creature_agents = []
@@ -46,12 +46,12 @@ func create_resource_shell() -> Resource:
 
 func populate_resource(res: Resource, importer: Object) -> void:
 	# Resolve action nodes
-	for aid in action_node_ids:
-		importer._resolve_and_append_array(res.action_nodes, "action-nodes", aid, id)
+	for action_node_id in action_node_ids:
+		importer._resolve_and_append_array("action-nodes", action_node_id, id, res.action_nodes)
 
 	# Resolve creatures (NPCs)
-	for mid in unit_ids:
-		importer._resolve_and_append_array(res.creature_agents, "creatures", mid, id)
+	for unit_id in unit_ids:
+		importer._resolve_and_append_array("creatures", unit_id, id, res.creature_agents)
 	# Resolve exits (direction -> location id)
 	for dir in exits.keys():
 		var dest_id = exits[dir]

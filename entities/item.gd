@@ -21,9 +21,9 @@ func get_entity_type() -> String:
 	return "items"
 
 func create_resource_shell() -> Resource:
-	var shell = ItemData.new()
+	var shell := ItemData.new()
 	shell.id = id
-	shell.name = name
+	shell.name = _name
 	return shell
 
 func populate_resource(res: Resource, importer: Object) -> void:

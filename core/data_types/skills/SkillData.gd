@@ -1,7 +1,8 @@
-extends Resource
+extends ResourceData
 
 class_name SkillData
 
-@export var id: String = ""
-@export var name: String = ""
 @export var level: int = 0
+
+func fields_to_string(show_class = true) -> String:
+	return "SkillData  %s  level=%d" % [super.fields_to_string(false), level]

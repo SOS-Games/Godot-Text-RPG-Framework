@@ -1,20 +1,20 @@
 class_name GameEntity extends Node
 
 var id: String
-#var name: String # name is already declared in Node
+var _name: String # name is already declared in Node
 
-func _init(p_id: String = "", name: String = "") -> void:
+func _init(p_id: String = "", p_name: String = "") -> void:
 	id = p_id
-	#name = name
+	_name = p_name
 
 static func deserialize(data: Variant):
 	if typeof(data) != TYPE_DICTIONARY:
 		return YAMLResult.error("GameEntity expects Dictionary")
 	var d: Dictionary = data
-	return GameEntity.new(d.get("id", ""), d.get("name", ""))
+	return GameEntity.new(d.get("id", ""), d.get("_name", ""))
 
 func serialize() -> Dictionary:
-	return {"id": id, "name": name}
+	return {"id": id, "_name": _name}
 
 func get_entity_type() -> String:
 	return "entity"

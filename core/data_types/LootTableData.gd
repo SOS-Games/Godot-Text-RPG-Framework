@@ -1,8 +1,9 @@
-extends Resource
+extends ResourceData
 
 class_name LootTableData
 
-@export var id: String = ""
 # Array of typed loot drops
 @export var drops: Array[LootDrop] = []
 
+func fields_to_string(show_class = true) -> String:
+	return "LootTableData  id=%s  name=%s  drops=%s" % [id, name, get_attr_array("drops")]

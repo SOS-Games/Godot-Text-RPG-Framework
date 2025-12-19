@@ -21,9 +21,9 @@ func get_entity_type() -> String:
 	return "skills"
 
 func create_resource_shell() -> Resource:
-	var shell = SkillData.new()
+	var shell := SkillData.new()
 	shell.id = id
-	shell.name = name
+	shell.name = _name
 	shell.level = level
 	return shell
 

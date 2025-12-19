@@ -21,9 +21,9 @@ func get_entity_type() -> String:
 	return "creatures"
 
 func create_resource_shell() -> Resource:
-	var shell = CreatureData.new()
+	var shell := CreatureData.new()
 	shell.id = id
-	shell.name = name
+	shell.name = _name
 	shell.level = level
 	return shell
 

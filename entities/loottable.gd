@@ -17,7 +17,7 @@ func get_entity_type() -> String:
 	return "loot_tables"
 
 func create_resource_shell() -> Resource:
-	var shell = LootTableData.new()
+	var shell := LootTableData.new()
 	shell.id = id
 	return shell
 
