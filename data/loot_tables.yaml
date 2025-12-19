@@ -15,7 +15,3 @@ loot_tables:
         chance: 0.9
         min_quantity: 1
         max_quantity: 2
-      - item_id: "silver_coin"
-        chance: 0.3
-        min_quantity: 1
-        max_quantity: 3

@@ -28,7 +28,7 @@ func create_resource_shell() -> Resource:
 
 func populate_resource(res: Resource, importer: Object) -> void:
 	if drop != "":
-		var resolved = importer._get_resource_or_log_with_owner("drop", drop, id)
+		var resolved = importer._get_resource_or_log("items", drop, id)
 		if resolved != null:
 			res.drop = resolved
 	# Future: populate loot_table and req_skillset references from raw data

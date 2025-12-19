@@ -55,7 +55,7 @@ func populate_resource(res: Resource, importer: Object) -> void:
 	# Resolve exits (direction -> location id)
 	for dir in exits.keys():
 		var dest_id = exits[dir]
-		var dest = importer._get_resource_or_log_with_owner("locations", str(dest_id), id)
+		var dest = importer._get_resource_or_log("locations", str(dest_id), id)
 		if dest != null:
 			var exit = LocationExit.new()
 			exit.direction = dir

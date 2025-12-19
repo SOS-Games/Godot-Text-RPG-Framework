@@ -287,44 +287,22 @@ func _find_entity_by_any_category(id: String, expected_type: Variant = null, own
 
 	return entity
 
-func get_converted_resource(category: String, id: String):
+func get_converted_resource(category: String, id: String, owner_id: String = "") -> Resource:
 	if _resources.has(category):
 		return _resources[category].get(id, null)
+	else:
+		_errors.append("get_converted_resource Unresolved %s %s referenced by %s" % [category, id, owner_id])
 	return null
 
-func get_converted_resource_by_identifier(id_or_name: String):
-	# Accept forms "category:id" or plain id/name and search converted resources
-	if id_or_name.find(":") != -1:
-		var parts = id_or_name.split(":", false, 2)
-		if parts.size() >= 2:
-			return get_converted_resource(parts[0], parts[1])
-
-	for cat in _resources.keys():
-		if _resources[cat].has(id_or_name):
-			return _resources[cat][id_or_name]
-		for r in _resources[cat].values():
-			if r != null and typeof(r) == TYPE_OBJECT:
-				if r.name == id_or_name:
-					return r
-	return null
-
-func _get_resource_or_log_with_owner(category: String, id: String, owner_id: String):
+func _get_resource_or_log(category: String, id: String, owner_id: String):
 	# Return a converted resource or log an error; owner_id is used for error context
-	var r = get_converted_resource(category, id)
-	if r == null:
-		_errors.append("Unresolved %s %s referenced by %s" % [category, id, owner_id])
+	var r = get_converted_resource(category, id, owner_id)
 	return r
 
 func _resolve_and_append_array(target: Array, category: String, id: String, owner_id: String) -> void:
-	var r = _get_resource_or_log_with_owner(category, id, owner_id)
+	var r = _get_resource_or_log(category, id, owner_id)
 	if r != null:
 		target.append(r)
-
-func _get_resource_by_identifier_or_log(id_or_name: String, owner_id: String):
-	var r = get_converted_resource_by_identifier(id_or_name)
-	if r == null:
-		_errors.append("Unresolved identifier %s referenced by %s" % [id_or_name, owner_id])
-	return r
 
 func _convert_entities_to_resources() -> void:
 	# Two-pass conversion to avoid circular reference problems:

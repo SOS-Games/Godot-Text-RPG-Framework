@@ -29,6 +29,6 @@ func create_resource_shell() -> Resource:
 func populate_resource(res: Resource, importer: Object) -> void:
 	# Resolve equip_skill reference into a SkillData resource
 	if equip_skill_id != "":
-		var skill_res = importer._get_resource_or_log_with_owner("skills", equip_skill_id, id)
+		var skill_res = importer._get_resource_or_log("skills", equip_skill_id, id)
 		if skill_res != null:
 			res.equip_skill = skill_res
