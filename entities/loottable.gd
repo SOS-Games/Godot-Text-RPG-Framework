@@ -27,6 +27,13 @@ func create_resource_shell() -> Resource:
 	return shell
 
 func populate_resource(res: Resource, importer: Object) -> void:
-	pass
-	#for drop in _drops:
-	#	importer._resolve_and_append_array("items", drop, _id, res.drops)
+	for drop in _drops:
+		var _drop := LootDrop.new()
+		var _drop_id = drop.get("item_id", "")
+		_drop.item = importer._get_resource_or_log("items", _drop_id, _id)
+		_drop.chance = drop.get("chance", 1.0)
+		_drop.min_quantity = drop.get("min_quantity", 1)
+		_drop.max_quantity = drop.get("max_quantity", 1)
+		res.drops.append(_drop)
+		# we only need to resolve drops.item_id, the rest are plain data
+		# are loot drops a resource?

@@ -317,16 +317,16 @@ func _find_entity_by_any_category(id: String, expected_type: Variant = null, own
 	return entity
 
 func get_converted_resource(category: String, id: String, owner_id: String = "") -> Resource:
+	var r
 	if _resources.has(category):
-		return _resources[category].get(id, null)
-	else:
+		r = _resources[category].get(id, null)
+	if r == null:
 		_errors.append("get_converted_resource Unresolved %s %s referenced by %s" % [category, id, owner_id])
-	return null
+	return r
 
 func _get_resource_or_log(category: String, id: String, owner_id: String):
 	# Return a converted resource or log an error; owner_id is used for error context
-	var r = get_converted_resource(category, id, owner_id)
-	return r
+	return get_converted_resource(category, id, owner_id)
 
 func _resolve_and_append_array(category: String, id: String, owner_id: String, target: Array) -> void:
 	var r = _get_resource_or_log(category, id, owner_id)

@@ -6,4 +6,3 @@ class_name LootDrop
 @export var chance: float = 0.5
 @export var min_quantity: int = 1
 @export var max_quantity: int = 1
-

@@ -19,3 +19,5 @@ items:
     name: "Copper Ore"
   - id: "items:ore_iron"
     name: "Iron Ore"
+  - id: "items:coins"
+    name: "Coin"
