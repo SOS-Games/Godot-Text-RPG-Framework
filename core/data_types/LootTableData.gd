@@ -6,4 +6,4 @@ class_name LootTableData
 @export var drops: Array[LootDrop] = []
 
 func fields_to_string(show_class = true) -> String:
-	return "LootTableData  id=%s  name=%s  drops=%s" % [id, name, drops.size()]
+	return "LootTableData  %s  drops=%s" % [super.fields_to_string(false), get_attr_array("drops", "item", "id")]

@@ -21,13 +21,16 @@ func get_attr(attr) -> String:
 	else:
 		return ""
 
-func get_attr_array(attr) -> String:
+func get_attr_array(attr, field_name = "id", field_name2 = "") -> String:
 	var mystring = ""
 	mystring += "Array<"
 	var datas = self.get(attr)
 	for i in range(datas.size()):
 		if i > 0:
 			mystring += ", "
-		mystring += "%s" % datas[i].id
+		if (field_name2 != ""):
+			mystring += "%s" % datas[i].get(field_name).get(field_name2)
+		else:
+			mystring += "%s" % datas[i].get(field_name)
 	mystring += ">"
 	return mystring
