@@ -15,31 +15,7 @@ func _ready():
 		print("Import successful - no errors")
 	
 	importer.print_all_resources()
-	'''
-	print("\n=== ENTITIES (no duplication) ===")
-	print("Skills loaded:")
-	for skill_id in importer.get_entities("skills").keys():
-		var _skill = importer.query("skills", skill_id)
-		print("  - %s: %s (level %d)" % [skill_id, _skill.name, _skill.level])
-
-	print("Items loaded:")
-	for item_id in importer.get_entities("items").keys():
-		var _item = importer.query("items", item_id)
-		print(_item.to_string())
-		#print("  - %s: %s (requires skill: %s)" % [item_id, _item.name, _item.equip_skill_id])
 	
-	print("NPCs loaded:")
-	for npc_id in importer.get_entities("npcs").keys():
-		var npc = importer.query("npcs", npc_id)
-		print("  - %s: %s" % [npc_id, npc.name])
-	
-	print("Action Nodes loaded:")
-	for an_id in importer.get_entities("action-nodes").keys():
-		var an = importer.query("action-nodes", an_id)
-		print("  - %s: %s (resource: %s)" % [an_id, an.name, an.resource])
-	'''
-	# todo - print out all entities from all categories with proper formatting based on type data
-
 	# Demonstrate query API (no duplication)
 	print("\n=== QUERY API DEMO ===")
 	var skill = importer.query("skills", "skills:combat")

@@ -18,7 +18,7 @@ var _validation_reports: Array = []
 var _resources: Dictionary = {} # category -> id -> Resource
 var _entity_directory: Dictionary = {} # category -> id -> deserialized entity object
 
-var import_order: Array = ["skills", "skillsets", "items", "itemsets", "loot_tables", "npcs", "creatures", "actions", "locations", "stores"]
+var import_order: Array = ["gods", "skills", "skillsets", "items", "itemsets", "loot_tables", "npcs", "creatures", "actions", "locations", "stores"]
 
 # Maps field names to their expected reference type (category)
 # This map is used to validate references and convert them to typed Resource objects
@@ -51,6 +51,7 @@ func _register_entity_classes() -> void:
 	YAML.register_class(ItemSet)
 	YAML.register_class(LootTable)
 	YAML.register_class(Store)
+	YAML.register_class(God)
 
 	# Map category names to entity classes for conversion
 	_entity_class_map = {
@@ -64,6 +65,7 @@ func _register_entity_classes() -> void:
 		"itemsets": ItemSet,
 		"loot_tables": LootTable,
 		"stores": Store,
+		"gods": God,
 	}
 
 	# Prepare empty registries
@@ -350,6 +352,7 @@ func _convert_entities_to_resources() -> void:
 				_entity_directory[cat][id] = obj
 			else:
 				# Keep raw dict available but note we can't convert to typed object
+				# might be caused by missing value in _entity_class_map
 				_errors.append("No class for category %s; cannot create object for %s" % [cat, id])
 
 	# Pass 2a: create resource shells for every entity (no cross-linking yet)

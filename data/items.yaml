@@ -21,3 +21,5 @@ items:
     name: "Iron Ore"
   - id: "items:coins"
     name: "Coin"
+  - id: "items:fish_mackerel"
+    name: "Mackerel"

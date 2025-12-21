@@ -2,13 +2,13 @@ extends Node
 
 var game_start = false
 
-# todo: should put rewards into an inventory (gloot)
+# todo: should put rewards into an inventory (gloot). can delay for now
 var current_reward_mining = 0
 var current_reward_fishing = 0
 var current_reward_woodcutting = 0
 
 # todo: should load a location from DB
-var default_location = "locations:western_forest"
+var default_location = "locations:forest"
 
 # todo: should load action nodes from the current location's data
 var all_actions = [
