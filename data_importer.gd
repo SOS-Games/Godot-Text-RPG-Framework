@@ -25,7 +25,7 @@ var import_order: Array = ["gods", "skills", "skillsets", "items", "itemsets", "
 # this is not used by the yaml parser, but instead this data_importer.gd
 var _reference_type_map: Dictionary = {
 	"equip_skill_id": "skills",
-	"action_node_ids": "action-nodes",
+	"action_node_ids": "action_nodes",
 	#"creature_ids": "creatures",
 	"item_ids": "items",
 	#"npc_ids": "npcs",
@@ -59,7 +59,7 @@ func _register_entity_classes() -> void:
 		"skills": Skill,
 		"npcs": NPC,
 		"creatures": Creature,
-		"action-nodes": ActionNode,
+		"action_nodes": ActionNode,
 		"locations": Location,
 		"skillsets": SkillSet,
 		"itemsets": ItemSet,

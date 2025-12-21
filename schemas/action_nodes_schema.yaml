@@ -1,8 +1,7 @@
-$id: "http://game/schemas/action-nodes.yaml"
-# Schema for action-nodes.yaml - object with 'action-nodes' key containing array
+$id: "http://game/schemas/action_nodes.yaml"
 type: object
 properties:
-  action-nodes:
+  action_nodes:
     type: array
     items:
       type: object
@@ -13,4 +12,6 @@ properties:
           type: string
         drop:
           type: string
-      required: [id, name, drop]
+        max_hp:
+          type: integer
+      required: [id, name, drop, max_hp]

@@ -2,9 +2,9 @@ $schema: "http://game/schemas/locations.yaml"
 locations:
   - id: "locations:forest"
     name: "Enchanted Forest"
-    action_node_ids: ["action-nodes:tree_oak", "action-nodes:ore_iron", "action-nodes:fishing_spot_mackerel"]
+    action_node_ids: ["action_nodes:tree_oak", "action_nodes:ore_iron", "action_nodes:fishing_spot_mackerel"]
     unit_ids: ["creatures:goblin"]
   - id: "locations:mines"
     name: "Old Mines"
-    action_node_ids: ["action-nodes:ore_iron"]
+    action_node_ids: ["action_nodes:ore_iron"]
     unit_ids: ["creatures:wolf"]

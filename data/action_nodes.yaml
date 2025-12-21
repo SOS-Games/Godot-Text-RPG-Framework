@@ -1,14 +1,14 @@
-$schema: "http://game/schemas/action-nodes.yaml"
-action-nodes:
-  - id: "action-nodes:tree_oak"
+$schema: "http://game/schemas/action_nodes.yaml"
+action_nodes:
+  - id: "action_nodes:tree_oak"
     name: "Oak Tree"
     drop: "items:wood"
     max_hp: 100
-  - id: "action-nodes:ore_iron"
+  - id: "action_nodes:ore_iron"
     name: "Iron Vein"
     drop: "items:ore_iron"
     max_hp: 100
-  - id: "action-nodes:fishing_spot_mackerel"
+  - id: "action_nodes:fishing_spot_mackerel"
     name: "Mackerel Fishing Spot"
     drop: "items:fish_mackerel"
     max_hp: 100

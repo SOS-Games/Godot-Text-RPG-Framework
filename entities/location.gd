@@ -47,7 +47,7 @@ func create_resource_shell() -> Resource:
 func populate_resource(res: Resource, importer: Object) -> void:
 	# Resolve action nodes
 	for action_node_id in _action_node_ids:
-		importer._resolve_and_append_array("action-nodes", action_node_id, _id, res.action_nodes)
+		importer._resolve_and_append_array("action_nodes", action_node_id, _id, res.action_nodes)
 
 	# Resolve creatures (NPCs)
 	for unit_id in _unit_ids:
