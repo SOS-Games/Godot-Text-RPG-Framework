@@ -1,13 +1,18 @@
 extends Control
 
+class_name UIManager
+
 @onready
-var button_container = get_node("VBoxContainer")
+var button_container = get_node("/root/Node2D/Control/VBoxContainer")
 
 func _ready():
+	GameManager.initUI()
+	return
+
 	# create 3 buttons for each action
-	_create_button("Mining", "mining")
-	_create_button("Fishing", "fishing")
-	_create_button("Woodcutting", "woodcutting")
+	create_button("Mining", "mining")
+	create_button("Fishing", "fishing")
+	create_button("Woodcutting", "woodcutting")
 	'''
 	var mining_button = Button.new()
 	mining_button.text = "Mining"
@@ -26,7 +31,7 @@ func _ready():
 	#button_container.add_child(fishing_button)
 	#button_container.add_child(woodcutting_button)
 
-func _create_button(action_name, action_id):
+func create_button(action_name, action_id):
 	var button = Button.new()
 	button.text = action_name
 	button.pressed.connect(GameManager.change_action.bind(action_id))

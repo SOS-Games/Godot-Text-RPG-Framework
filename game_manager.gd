@@ -38,6 +38,33 @@ var damage_max = 30
 var primary_timer = Timer.new()
 
 func _ready():
+	var importer = DataImporter.new()
+	importer.schemas_dir = "res://schemas"
+	importer.data_dirs = ["res://data"]
+	var ok = importer.import_all()
+	if not ok:
+		print("Import completed with errors:")
+		for e in importer.get_errors():
+			print(" - ", e)
+		get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+		return
+	else:
+		print("Import successful - no errors")
+	
+	importer.print_all_resources()
+	
+	# Print validation reports if any
+	var reports = importer.get_validation_reports()
+	if reports.size() > 0:
+		print("\nValidation reports:")
+		for r in reports:
+			print(" - File:", r.file, "errors:", r.count)
+			for e in r.errors:
+				print("    path:", e.instance_path, "|", e.message, "(", e.keyword, ")")
+	
+	resources = importer._resources.duplicate()
+	importer.free()
+
 	primary_timer.autostart = true
 	primary_timer.paused = true
 	add_child(primary_timer)
@@ -48,11 +75,16 @@ func _ready():
 	# might not need this since we are using a timer
 	#pass
 
-func start_game():
-	primary_timer.paused = false
+func initUI():
 	var location: LocationData = query("locations", default_location)
 	if location:
 		print(location.fields_to_string())
+		for action_node in location.action_nodes:
+			UiManager.create_button(action_node.name, action_node.id)
+	start_game()
+
+func start_game():
+	primary_timer.paused = false
 
 func _on_primary_timer_timeout():
 	if current_action_id == "mining":

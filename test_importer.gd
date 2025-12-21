@@ -1,6 +1,8 @@
 extends Node
 
 func _ready():
+	return
+	
 	var importer = DataImporter.new()
 	importer.schemas_dir = "res://schemas"
 	importer.data_dirs = ["res://data"]
@@ -16,18 +18,6 @@ func _ready():
 	
 	importer.print_all_resources()
 	
-	'''
-	# Demonstrate query API (no duplication)
-	print("\n=== QUERY API DEMO ===")
-	var skill = importer.query("skills", "skills:combat")
-	if skill:
-		print("Queried skill: %s" % skill.name)
-	
-	var item = importer.query("items", "items:sword_iron")
-	if item:
-		print("Queried item: %s (%s)" % [item.name, item.equip_skill.id])
-	'''
-	
 	# Print validation reports if any
 	var reports = importer.get_validation_reports()
 	if reports.size() > 0:
@@ -40,3 +30,16 @@ func _ready():
 	GameManager.resources = importer._resources.duplicate()
 	importer.free()
 	GameManager.start_game()
+
+	'''
+	# Demonstrate query API (no duplication)
+	print("\n=== QUERY API DEMO ===")
+	var skill = importer.query("skills", "skills:combat")
+	if skill:
+		print("Queried skill: %s" % skill.name)
+	
+	var item = importer.query("items", "items:sword_iron")
+	if item:
+		print("Queried item: %s (%s)" % [item.name, item.equip_skill.id])
+	'''
+	
