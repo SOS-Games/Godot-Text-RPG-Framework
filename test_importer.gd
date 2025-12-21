@@ -16,6 +16,7 @@ func _ready():
 	
 	importer.print_all_resources()
 	
+	'''
 	# Demonstrate query API (no duplication)
 	print("\n=== QUERY API DEMO ===")
 	var skill = importer.query("skills", "skills:combat")
@@ -24,11 +25,9 @@ func _ready():
 	
 	var item = importer.query("items", "items:sword_iron")
 	if item:
-		print("Queried item: %s (equip skill ref: %s)" % [item.name, item.equip_skill_id])
-		# To get the actual skill, call query again:
-		var actual_skill = importer.query("skills", item.equip_skill_id)
-		print("  -> Resolved skill: %s" % actual_skill.name)
-
+		print("Queried item: %s (%s)" % [item.name, item.equip_skill.id])
+	'''
+	
 	# Print validation reports if any
 	var reports = importer.get_validation_reports()
 	if reports.size() > 0:
@@ -37,3 +36,7 @@ func _ready():
 			print(" - File:", r.file, "errors:", r.count)
 			for e in r.errors:
 				print("    path:", e.instance_path, "|", e.message, "(", e.keyword, ")")
+	
+	GameManager.resources = importer._resources.duplicate()
+	importer.free()
+	GameManager.start_game()

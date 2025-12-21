@@ -2,6 +2,8 @@ extends Node
 
 var game_start = false
 
+var resources: Dictionary = {} # category -> id -> Resource
+
 # todo: should put rewards into an inventory (gloot). can delay for now
 var current_reward_mining = 0
 var current_reward_fishing = 0
@@ -37,7 +39,7 @@ var primary_timer = Timer.new()
 
 func _ready():
 	primary_timer.autostart = true
-	primary_timer.paused = false
+	primary_timer.paused = true
 	add_child(primary_timer)
 	primary_timer.timeout.connect(_on_primary_timer_timeout)
 
@@ -48,6 +50,9 @@ func _ready():
 
 func start_game():
 	primary_timer.paused = false
+	var location: LocationData = query("locations", default_location)
+	if location:
+		print(location.fields_to_string())
 
 func _on_primary_timer_timeout():
 	if current_action_id == "mining":
@@ -91,3 +96,13 @@ func _check_action_validity(new_action_id):
 		if action["id"] == new_action_id:
 			return true
 	return false
+
+func query(category: String, id: String) -> Variant:
+	"""Convenience alias for get_resource()."""
+	return get_resource(category, id)
+
+func get_resource(category: String, id: String) -> Resource:
+	"""Query a single resource by category and id. Returns null if not found."""
+	if resources.has(category):
+		return resources[category].get(id, null)
+	return null

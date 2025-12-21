@@ -394,18 +394,24 @@ func _validate_entity_type(entity: Variant, category: String, expected_type: Str
 		return entity.get_entity_type() == expected_type
 	return false
 
-func get_entities(category: String) -> Dictionary:
-	return _entities.get(category, {})
-
+'''
 func get_entity(category: String, id: String) -> Variant:
+	# use get_resource instead!!!
 	"""Query a single entity by category and id. Returns null if not found."""
 	if _entities.has(category):
 		return _entities[category].get(id, null)
 	return null
+'''
 
 func query(category: String, id: String) -> Variant:
-	"""Convenience alias for get_entity()."""
-	return get_entity(category, id)
+	"""Convenience alias for get_resource()."""
+	return get_resource(category, id)
+
+func get_resource(category: String, id: String) -> Resource:
+	"""Query a single resource by category and id. Returns null if not found."""
+	if _resources.has(category):
+		return _resources[category].get(id, null)
+	return null
 
 func get_errors() -> Array:
 	return _errors.duplicate()
