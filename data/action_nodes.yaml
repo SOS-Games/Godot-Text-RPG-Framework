@@ -4,11 +4,14 @@ action_nodes:
     name: "Oak Tree"
     drop: "items:wood"
     max_hp: 100
+    type: "woodcutting"
   - id: "action_nodes:ore_iron"
     name: "Iron Vein"
     drop: "items:ore_iron"
     max_hp: 100
+    type: "mining"
   - id: "action_nodes:fishing_spot_mackerel"
     name: "Mackerel Fishing Spot"
     drop: "items:fish_mackerel"
     max_hp: 100
+    type: "fishing"
