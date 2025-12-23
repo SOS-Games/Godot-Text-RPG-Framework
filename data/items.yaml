@@ -6,13 +6,25 @@ items:
   - id: "items:helm_iron"
     name: "Iron Helm"
     equip_skill_id: "skills:defense"
+  - id: "items:chest_iron"
+    name: "Iron Chest"
+    equip_skill_id: "skills:defense"
+
+  - id: "items:hat_mage"
+    name: "Mage Hat"
+    equip_skill_id: "skills:magic"
+  - id: "items:robe_mage"
+    name: "Mage Robe"
+    equip_skill_id: "skills:magic"
   - id: "items:staff_wood"
     name: "Wooden Staff"
     equip_skill_id: "skills:magic"
+
   - id: "items:wolf_pelt"
     name: "Wolf Pelt"
   - id: "items:health_potion"
     name: "Health Potion"
+
   - id: "items:wood"
     name: "Wood"
   - id: "items:ore_copper"
@@ -23,3 +35,4 @@ items:
     name: "Coin"
   - id: "items:fish_mackerel"
     name: "Mackerel"
+

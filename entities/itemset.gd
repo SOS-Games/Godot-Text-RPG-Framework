@@ -23,11 +23,32 @@ func create_resource_shell() -> Resource:
 	var shell := ItemSetData.new()
 	shell.id = _id
 	shell.name = _name
-	shell.slots = []
+	shell.head_slot = null
+	shell.body_slot = null
+	shell.shoe_slot = null
+	shell.primary_hand_slot = null
+	shell.offhand_slot = null
 	return shell
 
 func populate_resource(res: Resource, importer: Object) -> void:
+	var _res: ItemSetData = res
 	# Resolve slots
-	for slot_id in _slots:
+	for slot in _slots:
 		# todo: this is not a simple object. this wont work:
-		importer._resolve_and_append_array("slots", slot_id, _id, res.slots)
+		var item_id = _slots[slot]
+		var item_res = importer._get_resource_or_log("items", item_id, _id)
+		if item_res == null:
+			continue
+
+		if slot == "head":
+			_res.head_slot = item_res
+		elif slot == "body":
+			_res.body_slot = item_res
+		elif slot == "shoe":
+			_res.shoe_slot = item_res
+		elif slot == "primary_hand":
+			_res.primary_hand_slot = item_res
+		elif slot == "offhand":
+			_res.offhand_slot = item_res
+			
+	res = _res

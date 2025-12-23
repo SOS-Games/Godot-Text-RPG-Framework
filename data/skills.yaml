@@ -19,6 +19,9 @@ skills:
   - id: "skills:sorcery"
     name: "Sorcery"
     description: "Used to charge magic energies for use in spellcasting."
+  - id: "skills:summoning"
+    name: "Summoning"
+    description: "Used to summon creatures for combat or other purposes."
   
   - id: "skills:prayer"
     name: "Prayer"
@@ -30,6 +33,9 @@ skills:
   - id: "skills:fletching"
     name: "Fletching"
     description: "Used to create arrows, bolts, and other ranged ammunition."
+  - id: "skills:hunting"
+    name: "Hunting"
+    description: "Used to hunt creatures for food, or crafting and summoning materials."
 
   - id: "skills:foraging"
     name: "Foraging"

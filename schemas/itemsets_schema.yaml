@@ -13,7 +13,14 @@ properties:
         slots:
           type: object
           additionalProperties:
-            type: array
-            items:
+            head:
+              type: string
+            body:
+              type: string
+            shoe:
+              type: string
+            primary_hand:
+              type: string
+            offhand:
               type: string
       required: [id, name, slots]

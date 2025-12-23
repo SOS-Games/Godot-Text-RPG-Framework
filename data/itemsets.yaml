@@ -3,16 +3,11 @@ itemsets:
   - id: "knight_gear"
     name: "Knight Gear"
     slots:
-      head:
-        - "iron_helm"
-      body:
-        - "iron_chest"
-      weapon:
-        - "iron_sword"
+      head: "items:helm_iron"
+      body: "items:chest_iron"
+      primary_hand: "items:sword_iron"
   - id: "mage_robes"
     name: "Mage Robes"
     slots:
-      head:
-        - "mage_hat"
-      body:
-        - "mage_robe"
+      head: "items:hat_mage"
+      body: "items:robe_mage"
