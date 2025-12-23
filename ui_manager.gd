@@ -13,3 +13,5 @@ func create_button(action_name, action_id):
 	button.text = action_name
 	button.pressed.connect(GameManager.change_action.bind(action_id))
 	button_container.add_child(button)
+
+# todo: need graphics like Legioncraft

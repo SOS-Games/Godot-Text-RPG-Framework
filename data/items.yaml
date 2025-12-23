@@ -2,7 +2,7 @@ $schema: "http://game/schemas/items.yaml"
 items:
   - id: "items:sword_iron"
     name: "Iron Sword"
-    equip_skill_id: "skills:combat"
+    equip_skill_id: "skills:attack"
   - id: "items:helm_iron"
     name: "Iron Helm"
     equip_skill_id: "skills:defense"

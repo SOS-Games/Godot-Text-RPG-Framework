@@ -10,7 +10,4 @@ properties:
           type: string
         name:
           type: string
-        level:
-          type: integer
-          minimum: 0
-      required: [id, name, level]
+      required: [id, name]

@@ -15,6 +15,7 @@ var current_action_hp = 100
 
 # todo: should load these from equipment
 # need to store equipped items and load them, need to persist
+# can delay until I have equipment slots and an inventory
 var damage_min = 15
 var damage_max = 30
 
@@ -72,7 +73,8 @@ func _complete_action():
 	current_action_hp = max_action_hp
 	var current_action_type = current_action_data.type
 	
-	# todo: should put rewards into an inventory (gloot). can delay for now
+	# todo: should put rewards into an inventory (gloot)
+	# inventory needs to be persisted
 	if current_action_type == "mining":
 		print("You have mined a ", current_action_data.drop.id)
 	elif current_action_type == "fishing":

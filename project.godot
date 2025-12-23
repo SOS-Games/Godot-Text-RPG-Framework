@@ -22,4 +22,4 @@ UiManager="*res://ui_manager.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/yaml/plugin.cfg")
+enabled=PackedStringArray("res://addons/gloot/plugin.cfg", "res://addons/yaml/plugin.cfg")
