@@ -3,6 +3,8 @@ extends Node
 var game_start = false
 
 var resources: Dictionary = {} # category -> id -> Resource
+var persistence_manager: PersistenceManager
+var player_data: PlayerSaveData
 
 var default_location = "locations:forest"
 
@@ -12,6 +14,7 @@ var max_action_hp = 100
 var current_action_hp = 100
 
 # todo: should load these from equipment
+# need to store equipped items and load them, need to persist
 var damage_min = 15
 var damage_max = 30
 
@@ -21,6 +24,7 @@ var current_location_data: LocationData = null
 
 func _ready():
 	init_data()
+	init_persistence()
 
 	primary_timer.autostart = true
 	primary_timer.paused = true
@@ -75,10 +79,13 @@ func _complete_action():
 		print("You have fished a ", current_action_data.drop.id)
 	elif current_action_type == "woodcutting":
 		print("You have cut a ", current_action_data.drop.id)
+	
+	save_game()
 
 func change_action(new_action_id):
 	if _check_action_validity(new_action_id):
 		print("Changed action to: ", current_action_data.name)
+		save_game()
 	else:
 		print("Invalid action: ", new_action_id)
 
@@ -101,6 +108,28 @@ func get_resource(category: String, id: String) -> Resource:
 	if resources.has(category):
 		return resources[category].get(id, null)
 	return null
+
+func init_persistence():
+	persistence_manager = PersistenceManager.new()
+	add_child(persistence_manager)
+	
+	# Try to load existing save, otherwise create new player
+	player_data = persistence_manager.load_game()
+	if player_data == null:
+		print("No existing save found. Creating new player...")
+		player_data = persistence_manager.create_new_player("Player")
+		save_game()
+	else:
+		print("Loaded existing player: ", player_data.name)
+
+func save_game():
+	if persistence_manager and player_data:
+		# Update player data with current game state
+		if current_location_data == null:
+			player_data.current_location_id = default_location
+		else:
+			player_data.current_location_id = current_location_data.id
+		persistence_manager.save_game(player_data)
 
 func init_data():
 	var importer = DataImporter.new()
