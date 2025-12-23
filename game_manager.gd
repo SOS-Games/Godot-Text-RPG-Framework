@@ -4,7 +4,6 @@ var game_start = false
 
 var resources: Dictionary = {} # category -> id -> Resource
 var persistence_manager: PersistenceManager
-var player_data: PlayerSaveData
 
 var default_location = "locations:forest"
 
@@ -114,24 +113,37 @@ func get_resource(category: String, id: String) -> Resource:
 func init_persistence():
 	persistence_manager = PersistenceManager.new()
 	add_child(persistence_manager)
-	
+
 	# Try to load existing save, otherwise create new player
-	player_data = persistence_manager.load_game()
-	if player_data == null:
+	var loaded = persistence_manager.load_game()
+	if loaded == null:
 		print("No existing save found. Creating new player...")
-		player_data = persistence_manager.create_new_player("Player")
-		save_game()
+		loaded = persistence_manager.create_new_player("Player")
+		if Engine.has_singleton("PlayerState"):
+			PlayerState.clear()
+			PlayerState.apply_player_save_data(loaded)
+		# Persist the newly-created save
+		persistence_manager.save_game(loaded)
 	else:
-		print("Loaded existing player: ", player_data.name)
+		print("Loaded existing player: ", loaded.player_name)
+		# Load inventory/equipment into PlayerState singleton
+		if Engine.has_singleton("PlayerState"):
+			PlayerState.apply_player_save_data(loaded)
 
 func save_game():
-	if persistence_manager and player_data:
-		# Update player data with current game state
-		if current_location_data == null:
-			player_data.current_location_id = default_location
+	if persistence_manager:
+		# Use PlayerState as the authoritative runtime container and build a PlayerSaveData
+		var pd: PlayerSaveData = null
+		if Engine.has_singleton("PlayerState"):
+			pd = PlayerState.get_player_save_data()
 		else:
-			player_data.current_location_id = current_location_data.id
-		persistence_manager.save_game(player_data)
+			pd = persistence_manager.create_new_player("Player")
+		# Update location from game_manager state if present
+		if current_location_data == null:
+			pd.current_location_id = default_location
+		else:
+			pd.current_location_id = current_location_data.id
+		persistence_manager.save_game(pd)
 
 func init_data():
 	var importer = DataImporter.new()

@@ -6,6 +6,7 @@ class_name UIManager
 var button_container = get_node("/root/Node2D/Control/VBoxContainer")
 
 func _ready():
+	return
 	GameManager.initUI()
 
 func create_button(action_name, action_id):

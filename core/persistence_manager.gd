@@ -60,7 +60,7 @@ func create_new_player(player_name: String) -> PlayerSaveData:
 	"""Create a new player save data."""
 	var player_data = PlayerSaveData.new()
 	player_data.player_id = str(randi())
-	player_data.name = player_name
+	player_data.player_name = player_name
 	player_data.current_location_id = "locations:forest"
 	#player_data.item_ids = []
 	return player_data

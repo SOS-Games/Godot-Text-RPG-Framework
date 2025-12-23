@@ -22,9 +22,9 @@ func test_create_player() -> void:
 	print("[TEST] Creating new player...")
 	var player = persistence_manager.create_new_player("TestHero")
 	
-	if player and player.name == "TestHero" and player.player_id != "":
+	if player and player.player_name == "TestHero" and player.player_id != "":
 		_add_result("test_create_player", true, "Player created successfully")
-		print("✓ PASS: Player created with name=", player.name, " id=", player.player_id)
+		print("✓ PASS: Player created with name=", player.player_name, " id=", player.player_id)
 	else:
 		_add_result("test_create_player", false, "Failed to create player")
 		print("✗ FAIL: Player creation failed")
@@ -33,9 +33,13 @@ func test_create_player() -> void:
 func test_save_game() -> void:
 	print("[TEST] Saving game...")
 	var player = persistence_manager.create_new_player("SaveTestHero")
-	player.item_ids.assign(["items:sword", "items:shield"])
+	# populate inventory/equipment
+	PlayerState.inventory.create_and_add_item("item1")
+	PlayerState.equipment.create_and_add_item("minimal_item")
 	player.current_location_id = "locations:castle"
-	
+
+	# Serialize PlayerState into player save data and persist
+	PlayerState.save_to_player_data(player)
 	var success = persistence_manager.save_game(player)
 	
 	if success:
@@ -51,17 +55,25 @@ func test_load_game() -> void:
 	
 	# First ensure we have a save
 	var player = persistence_manager.create_new_player("LoadTestHero")
-	player.item_ids.assign(["items:sword", "items:shield"])
+	# add items and save
+	PlayerState.inventory.create_and_add_item("item1")
+	PlayerState.equipment.create_and_add_item("minimal_item_2")
 	player.current_location_id = "locations:dungeon"
+	PlayerState.save_to_player_data(player)
 	persistence_manager.save_game(player)
-	
+
+	PlayerState.clear()
+
 	# Now load it
 	var loaded_player = persistence_manager.load_game()
-	
-	if loaded_player and loaded_player.name == "LoadTestHero" and loaded_player.current_location_id == "locations:dungeon":
+
+	# Load into a fresh PlayerState to verify inventory deserialization
+	PlayerState.apply_player_save_data(loaded_player)
+
+	if loaded_player and loaded_player.player_name == "LoadTestHero" and loaded_player.current_location_id == "locations:dungeon" and PlayerState.inventory.get_item_count() > 0 and PlayerState.equipment.get_item_count() > 0:
 		_add_result("test_load_game", true, "Game loaded and data matches")
-		print("✓ PASS: Game loaded - name=", loaded_player.name, " location=", loaded_player.current_location_id)
-		print("  Items: ", loaded_player.item_ids)
+		print("✓ PASS: Game loaded - name=", loaded_player.player_name, " location=", loaded_player.current_location_id)
+		print("  Inventory count: ", PlayerState.inventory.get_item_count(), " Equipment count: ", PlayerState.equipment.get_item_count())
 	else:
 		_add_result("test_load_game", false, "Loaded data doesn't match saved data")
 		print("✗ FAIL: Load failed or data mismatch")
@@ -78,22 +90,27 @@ func test_modify_and_save() -> void:
 		return
 	
 	# Modify it
-	var original_count = player.item_ids.size()
-	player.item_ids.append("items:potion")
+	# Load into PlayerState, modify inventory, then save back
+	PlayerState.load_from_player_data(player)
+	var original_count = PlayerState.inventory.get_item_count()
+	PlayerState.inventory.create_and_add_item("minimal_item")
 	player.current_location_id = "locations:village"
+	PlayerState.save_to_player_data(player)
 	
 	# Save again
 	var save_success = persistence_manager.save_game(player)
 	
 	# Load and verify
 	var reloaded = persistence_manager.load_game()
-	var items_match = reloaded.item_ids.size() == original_count + 1
+	PlayerState.apply_player_save_data(reloaded)
+
+	var items_match = PlayerState.inventory.get_item_count() == original_count + 1
 	var location_match = reloaded.current_location_id == "locations:village"
 	
 	if save_success and items_match and location_match:
 		_add_result("test_modify_and_save", true, "Modifications persisted correctly")
 		print("✓ PASS: Modifications saved and loaded correctly")
-		print("  Items count: ", original_count, " -> ", reloaded.item_ids.size())
+		print("  Items count: ", original_count, " -> ", PlayerState.inventory.get_item_count())
 		print("  New location: ", reloaded.current_location_id)
 	else:
 		_add_result("test_modify_and_save", false, "Modifications not persisted correctly")

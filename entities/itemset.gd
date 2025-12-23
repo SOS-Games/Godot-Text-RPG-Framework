@@ -34,7 +34,6 @@ func populate_resource(res: Resource, importer: Object) -> void:
 	var _res: ItemSetData = res
 	# Resolve slots
 	for slot in _slots:
-		# todo: this is not a simple object. this wont work:
 		var item_id = _slots[slot]
 		var item_res = importer._get_resource_or_log("items", item_id, _id)
 		if item_res == null:
