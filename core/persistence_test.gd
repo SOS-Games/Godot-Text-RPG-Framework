@@ -33,9 +33,9 @@ func test_create_player() -> void:
 func test_save_game() -> void:
 	print("[TEST] Saving game...")
 	var player = persistence_manager.create_new_player("SaveTestHero")
-	# populate inventory/equipment
+	# populate inventory and equip an item into a slot
 	PlayerState.inventory.create_and_add_item("item1")
-	PlayerState.equipment.create_and_add_item("minimal_item")
+	PlayerState.equip_prototype_to_slot("minimal_item", "head")
 	player.current_location_id = "locations:castle"
 
 	# Serialize PlayerState into player save data and persist
@@ -55,9 +55,9 @@ func test_load_game() -> void:
 	
 	# First ensure we have a save
 	var player = persistence_manager.create_new_player("LoadTestHero")
-	# add items and save
+	# add items and save (inventory + equipment slots)
 	PlayerState.inventory.create_and_add_item("item1")
-	PlayerState.equipment.create_and_add_item("minimal_item_2")
+	PlayerState.equip_prototype_to_slot("minimal_item_2", "body")
 	player.current_location_id = "locations:dungeon"
 	PlayerState.save_to_player_data(player)
 	persistence_manager.save_game(player)
@@ -70,10 +70,10 @@ func test_load_game() -> void:
 	# Load into a fresh PlayerState to verify inventory deserialization
 	PlayerState.apply_player_save_data(loaded_player)
 
-	if loaded_player and loaded_player.player_name == "LoadTestHero" and loaded_player.current_location_id == "locations:dungeon" and PlayerState.inventory.get_item_count() > 0 and PlayerState.equipment.get_item_count() > 0:
+	if loaded_player and loaded_player.player_name == "LoadTestHero" and loaded_player.current_location_id == "locations:dungeon" and PlayerState.inventory.get_item_count() > 0 and PlayerState.get_slot("head").get_item() != null and PlayerState.get_slot("body").get_item() != null:
 		_add_result("test_load_game", true, "Game loaded and data matches")
 		print("✓ PASS: Game loaded - name=", loaded_player.player_name, " location=", loaded_player.current_location_id)
-		print("  Inventory count: ", PlayerState.inventory.get_item_count(), " Equipment count: ", PlayerState.equipment.get_item_count())
+		print("  Inventory count: ", PlayerState.inventory.get_item_count(), " Equipment head/body: ", PlayerState.get_slot("head").get_item() != null, ",", PlayerState.get_slot("body").get_item() != null)
 	else:
 		_add_result("test_load_game", false, "Loaded data doesn't match saved data")
 		print("✗ FAIL: Load failed or data mismatch")

@@ -172,3 +172,9 @@ func init_data():
 	
 	resources = importer._resources.duplicate()
 	importer.free()
+
+	# Build Gloot protoset from imported item resources and give it to PlayerState
+	if Engine.has_singleton("PlayerState"):
+		var builder := GlootProtosetBuilder.new()
+		var proto := builder.build(resources)
+		PlayerState.set_protoset(proto)

@@ -13,4 +13,6 @@ properties:
           type: string
         equip_skill_id:
           type: string
+        equip_slot:
+          type: string
       required: [id, name]

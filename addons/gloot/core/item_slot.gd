@@ -23,6 +23,7 @@ const _KEY_ITEM: String = "item"
             _inventory.protoset = protoset
         protoset_changed.emit()
         update_configuration_warnings()
+    @export var slot_name: String = ""
 var _inventory: Inventory = null:
     set(new_inventory):
         if new_inventory == _inventory:
@@ -66,6 +67,8 @@ func _get_configuration_warnings() -> PackedStringArray:
     if protoset == null:
         return PackedStringArray([
                 "This item slot has no protoset. Set the 'protoset' field to be able to equip items."])
+    if slot_name == "":
+        return PackedStringArray(["This item slot has no 'slot_name' set. Set 'slot_name' to restrict which items can be equipped."])
     return PackedStringArray()
 
 
@@ -111,6 +114,21 @@ func can_hold_item(item: InventoryItem) -> bool:
     if protoset != item.protoset:
         return false
 
+    # If this slot has a name, ensure item declares matching equip_slot
+    if slot_name != "":
+        # Try item property first
+        var s = item.get_property("equip_slot", "")
+        if typeof(s) == TYPE_STRING and s != "":
+            return s == slot_name
+        # Fallback to prototype property if available
+        var proto = item.get_prototype()
+        if is_instance_valid(proto) and proto.has_property("equip_slot"):
+            var ps = proto.get_property("equip_slot", "")
+            if typeof(ps) == TYPE_STRING and ps != "":
+                return ps == slot_name
+        # No equip_slot information, disallow
+        return false
+
     return true
 
 
@@ -120,6 +138,9 @@ func serialize() -> Dictionary:
 
     if get_item() != null:
         result[_KEY_ITEM] = get_item().serialize()
+    # persist configured slot name
+    if slot_name != "":
+        result["slot_name"] = slot_name
 
     return result
 
@@ -130,6 +151,9 @@ func deserialize(source: Dictionary) -> bool:
         return false
 
     clear()
+
+    if source.has("slot_name"):
+        slot_name = source["slot_name"]
 
     if source.has(_KEY_ITEM):
         var item := InventoryItem.new()
