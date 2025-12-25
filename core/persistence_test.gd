@@ -8,6 +8,10 @@ var test_results: Array = []
 func _ready():
 	persistence_manager = PersistenceManager.new()
 	add_child(persistence_manager)
+
+	# Ensure PlayerState has a protoset for creating InventoryItem prototypes used in tests
+	var proto := preload("res://addons/gloot/tests/data/protoset_basic.json")
+	PlayerState.set_protoset(proto)
 	
 	# Run all tests
 	print("\n========== PERSISTENCE TESTS ==========\n")
@@ -35,7 +39,7 @@ func test_save_game() -> void:
 	var player = persistence_manager.create_new_player("SaveTestHero")
 	# populate inventory and equip an item into a slot
 	PlayerState.inventory.create_and_add_item("item1")
-	PlayerState.equip_prototype_to_slot("minimal_item", "head")
+	PlayerState.equip_prototype_to_slot("items:chest_iron", "body")
 	player.current_location_id = "locations:castle"
 
 	# Serialize PlayerState into player save data and persist
@@ -57,7 +61,7 @@ func test_load_game() -> void:
 	var player = persistence_manager.create_new_player("LoadTestHero")
 	# add items and save (inventory + equipment slots)
 	PlayerState.inventory.create_and_add_item("item1")
-	PlayerState.equip_prototype_to_slot("minimal_item_2", "body")
+	PlayerState.equip_prototype_to_slot("items:chest_iron", "body")
 	player.current_location_id = "locations:dungeon"
 	PlayerState.save_to_player_data(player)
 	persistence_manager.save_game(player)
@@ -70,10 +74,14 @@ func test_load_game() -> void:
 	# Load into a fresh PlayerState to verify inventory deserialization
 	PlayerState.apply_player_save_data(loaded_player)
 
-	if loaded_player and loaded_player.player_name == "LoadTestHero" and loaded_player.current_location_id == "locations:dungeon" and PlayerState.inventory.get_item_count() > 0 and PlayerState.get_slot("head").get_item() != null and PlayerState.get_slot("body").get_item() != null:
+	var correct_player_name = loaded_player.player_name == "LoadTestHero"
+	var correct_location = loaded_player.current_location_id == "locations:dungeon"
+	var correct_body_item = PlayerState.get_slot("body").get_item() != null
+	
+	if loaded_player and correct_player_name and correct_location and PlayerState.inventory.get_item_count() > 0 and correct_body_item:
 		_add_result("test_load_game", true, "Game loaded and data matches")
 		print("✓ PASS: Game loaded - name=", loaded_player.player_name, " location=", loaded_player.current_location_id)
-		print("  Inventory count: ", PlayerState.inventory.get_item_count(), " Equipment head/body: ", PlayerState.get_slot("head").get_item() != null, ",", PlayerState.get_slot("body").get_item() != null)
+		print("  Inventory count: ", PlayerState.inventory.get_item_count(), " Equipment body: ", PlayerState.get_slot("body").get_item() != null)
 	else:
 		_add_result("test_load_game", false, "Loaded data doesn't match saved data")
 		print("✗ FAIL: Load failed or data mismatch")

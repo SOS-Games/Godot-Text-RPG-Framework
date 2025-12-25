@@ -119,25 +119,20 @@ func init_persistence():
 	if loaded == null:
 		print("No existing save found. Creating new player...")
 		loaded = persistence_manager.create_new_player("Player")
-		if Engine.has_singleton("PlayerState"):
-			PlayerState.clear()
-			PlayerState.apply_player_save_data(loaded)
+		PlayerState.clear()
+		PlayerState.apply_player_save_data(loaded)
 		# Persist the newly-created save
 		persistence_manager.save_game(loaded)
 	else:
 		print("Loaded existing player: ", loaded.player_name)
-		# Load inventory/equipment into PlayerState singleton
-		if Engine.has_singleton("PlayerState"):
-			PlayerState.apply_player_save_data(loaded)
+		# Load inventory/equipment into PlayerState
+		PlayerState.apply_player_save_data(loaded)
 
 func save_game():
 	if persistence_manager:
 		# Use PlayerState as the authoritative runtime container and build a PlayerSaveData
 		var pd: PlayerSaveData = null
-		if Engine.has_singleton("PlayerState"):
-			pd = PlayerState.get_player_save_data()
-		else:
-			pd = persistence_manager.create_new_player("Player")
+		pd = PlayerState.get_player_save_data()
 		# Update location from game_manager state if present
 		if current_location_data == null:
 			pd.current_location_id = default_location
@@ -174,7 +169,6 @@ func init_data():
 	importer.free()
 
 	# Build Gloot protoset from imported item resources and give it to PlayerState
-	if Engine.has_singleton("PlayerState"):
-		var builder := GlootProtosetBuilder.new()
-		var proto := builder.build(resources)
-		PlayerState.set_protoset(proto)
+	var builder := GlootProtosetBuilder.new()
+	var proto := builder.build(resources)
+	PlayerState.set_protoset(proto)

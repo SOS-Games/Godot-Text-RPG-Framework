@@ -8,5 +8,10 @@
     "item_2": {
         "name": "item 2",
         "image": "res://images/item_scroll_blue.png"
+    },
+    "items:chest_iron": {
+        "name": "Testing",
+        "image": "",
+        "equip_slot": "body"
     }
 }
