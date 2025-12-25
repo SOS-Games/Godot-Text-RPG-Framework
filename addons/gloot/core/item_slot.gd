@@ -23,7 +23,9 @@ const _KEY_ITEM: String = "item"
             _inventory.protoset = protoset
         protoset_changed.emit()
         update_configuration_warnings()
-    @export var slot_name: String = ""
+
+@export var slot_name: String = ""
+
 var _inventory: Inventory = null:
     set(new_inventory):
         if new_inventory == _inventory:

@@ -27,8 +27,8 @@ func create_resource_shell() -> Resource:
 	var shell := ItemData.new()
 	shell.id = _id
 	shell.name = _name
-	shell.equip_skill_id = _equip_skill_id
-	shell.equip_slot = EquipSlot.None
+	shell.equip_skill = null
+	shell.equip_slot = Utils.EquipSlot.NONE
 	return shell
 
 func populate_resource(res: Resource, importer: Object) -> void:
@@ -40,7 +40,7 @@ func populate_resource(res: Resource, importer: Object) -> void:
 
 	# validate equip_slot
 	if _equip_slot != "":
-		res.equip_slot = EquipSlot.get_slot(_equip_slot)
+		res.equip_slot = Utils.get_equip_slot(_equip_slot, importer)
 		var valid_slots = ["head", "body", "shoe", "primary_hand", "offhand"]
 		if not _equip_slot in valid_slots:
 			# throw error if slot is invalid

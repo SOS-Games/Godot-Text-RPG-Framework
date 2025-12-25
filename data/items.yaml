@@ -11,7 +11,7 @@ items:
   - id: "items:chest_iron"
     name: "Iron Chest"
     equip_skill_id: "skills:defense"
-    equip_slot: "chest"
+    equip_slot: "body"
 
   - id: "items:hat_mage"
     name: "Mage Hat"
@@ -20,7 +20,7 @@ items:
   - id: "items:robe_mage"
     name: "Mage Robe"
     equip_skill_id: "skills:magic"
-    equip_slot: "chest"
+    equip_slot: "body"
   - id: "items:staff_wood"
     name: "Wooden Staff"
     equip_skill_id: "skills:magic"
