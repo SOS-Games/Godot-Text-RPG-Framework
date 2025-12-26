@@ -6,5 +6,10 @@ class_name PlayerSaveData
 @export var player_name: String = ""
 @export var current_location_id: String = ""
 @export var inventory_data: Dictionary = {}
+
+# todo: there are duplicated
 @export var equipment_data: Dictionary = {}
 @export var equipment_slots_data: Dictionary = {}
+
+@export var bank_data: Dictionary = {}
+@export var stores_data: Dictionary = {}

@@ -7,6 +7,8 @@ var test_results: Array = []
 
 func _ready():
 	persistence_manager = PersistenceManager.new()
+	# Use a test-specific save file to avoid overwriting game saves
+	persistence_manager.save_file = "user://saves/test_player_save.tres"
 	add_child(persistence_manager)
 
 	# Ensure PlayerState has a protoset for creating InventoryItem prototypes used in tests

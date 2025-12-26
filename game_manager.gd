@@ -4,23 +4,20 @@ var game_start = false
 
 var resources: Dictionary = {} # category -> id -> Resource
 var persistence_manager: PersistenceManager
-
-var default_location = "locations:forest"
-
-var current_action_id = ""
-var current_action_data: ActionData = null
-var max_action_hp = 100
-var current_action_hp = 100
-
-# todo: should load these from equipment
-# need to store equipped items and load them, need to persist
-# can delay until I have equipment slots and an inventory
+var bank: Inventory = null # Shared bank for all locations
+var store_inventories: Dictionary = {} # store_id -> Inventory
 var damage_min = 15
 var damage_max = 30
 
 var primary_timer = Timer.new()
 
 var current_location_data: LocationData = null
+var default_location = "locations:forest"
+
+var current_action_id = ""
+var current_action_data: ActionData = null
+var max_action_hp = 100
+var current_action_hp = 100
 
 func _ready():
 	init_data()
@@ -64,6 +61,11 @@ func _on_primary_timer_timeout():
 		_do_action()
 
 func _do_action():
+	# Recalculate damage from current equipment
+	var dmg_calc = PlayerState.calculate_damage_from_equipment()
+	damage_min = dmg_calc["min"]
+	damage_max = dmg_calc["max"]
+	
 	current_action_hp -= randi_range(damage_min, damage_max)
 	if current_action_hp <= 0:
 		_complete_action()
@@ -72,16 +74,24 @@ func _complete_action():
 	current_action_hp = max_action_hp
 	var current_action_type = current_action_data.type
 	
-	# todo: should put rewards into an inventory (gloot)
-	# inventory needs to be persisted
-	if current_action_type == "mining":
-		print("You have mined a ", current_action_data.drop.id)
-	elif current_action_type == "fishing":
-		print("You have fished a ", current_action_data.drop.id)
-	elif current_action_type == "woodcutting":
-		print("You have cut a ", current_action_data.drop.id)
-	
-	save_game()
+	# Add reward item to player inventory
+	if current_action_data.drop != null:
+		var reward_id = current_action_data.drop.id
+		print("You have obtained: ", current_action_data.drop.name)
+		# Add to player inventory using Gloot
+		var item = InventoryItem.new(PlayerState.protoset, reward_id)
+		if PlayerState.inventory.add_item(item):
+			print("Added ", reward_id, " to inventory")
+		else:
+			print("Failed to add ", reward_id, " to inventory (may be full)")
+		save_game()
+	else:
+		if current_action_type == "mining":
+			print("You have mined something...")
+		elif current_action_type == "fishing":
+			print("You have fished something...")
+		elif current_action_type == "woodcutting":
+			print("You have cut something...")
 
 func change_action(new_action_id):
 	if _check_action_validity(new_action_id):
@@ -110,6 +120,25 @@ func get_resource(category: String, id: String) -> Resource:
 		return resources[category].get(id, null)
 	return null
 
+func get_bank() -> Inventory:
+	"""Get the shared bank inventory (accessible from any location)."""
+	if bank == null:
+		bank = Inventory.new()
+		bank.name = "bank"
+		if PlayerState.protoset != null:
+			bank.protoset = PlayerState.protoset
+	return bank
+
+func get_store_inventory(store_id: String) -> Inventory:
+	"""Get or create a store inventory. Each store has its own inventory."""
+	if not store_inventories.has(store_id):
+		var store_inv = Inventory.new()
+		store_inv.name = "store_" + store_id
+		if PlayerState.protoset != null:
+			store_inv.protoset = PlayerState.protoset
+		store_inventories[store_id] = store_inv
+	return store_inventories[store_id]
+
 func init_persistence():
 	persistence_manager = PersistenceManager.new()
 	add_child(persistence_manager)
@@ -127,6 +156,8 @@ func init_persistence():
 		print("Loaded existing player: ", loaded.player_name)
 		# Load inventory/equipment into PlayerState
 		PlayerState.apply_player_save_data(loaded)
+		# Load bank and stores
+		PlayerState.load_bank_and_stores(loaded, get_bank(), store_inventories)
 
 func save_game():
 	if persistence_manager:
@@ -138,6 +169,8 @@ func save_game():
 			pd.current_location_id = default_location
 		else:
 			pd.current_location_id = current_location_data.id
+		# Persist bank and stores
+		PlayerState.save_bank_and_stores(pd, bank, store_inventories)
 		persistence_manager.save_game(pd)
 
 func init_data():
